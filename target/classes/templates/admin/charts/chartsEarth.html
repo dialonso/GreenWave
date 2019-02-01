@@ -1,0 +1,470 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Charts - Earth | GreenWave</title>
+	
+	    <div th:replace="fragments/header_admin :: header-admin-css"/>
+		
+		<link rel="stylesheet" th:href="@{/css/admin/chartForm.css}"
+	              href="../../css/admin/chartForm.css" />
+	              
+	    <style>
+			canvas {
+				-webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    			-moz-user-select: none;
+    			-khtml-user-select: none; 
+   				-ms-user-select: none;user-select: none;"
+   			}
+		</style>
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_admin :: header-admin"/>	
+		
+		<div class="container_fluid" id="body_container">
+		    <div class="row">
+				<div class="page-header" id="header_admin">
+					<h1>
+						Tableau de bord 
+						<small>Statistiques</small>
+					</h1>
+				</div>
+				
+				<form action="#" th:action="@{/changeEarthCharts}" th:object="${chartForm}" method="post">
+					<div class="row">
+						<div class="col-md-offset-1 col-md-10 col-xs-offset-1 col-xs-10">
+                    		<div class="panel" style="margin-top:10px;">
+                        		<div class="panel-heading custom-header-panel">
+                            		<h3 class="panel-title">Filtrage des données</h3>
+                        		</div>
+                        
+                        		<div class="panel-body" id="formBody">
+                        			<div class="form-group">
+                                		<label for="country" class="col-sm-2 control-label">
+                                			Période
+                                			<span class="requeried"> *</span>
+                                		</label>
+										<div class="col-sm-10">
+											Du <input required="required" id="fDate" type="date" th:field="*{startDate}"/>
+											Au <input required="required" id="lDate" type="date" th:field="*{endDate}"/>
+				                		</div>
+                            		</div>
+                            
+                            		<div class="form-group">
+                                		<label class="col-sm-2 control-label">
+                                			Type de données
+                                			<span class="requeried"> *</span>
+                                		</label>
+                                		<div class="col-sm-10">
+                                			<div class="control-group">
+												<label class="control control--radio">
+													Données classiques
+													<input type="radio" name="optradio" value="classic" checked="checked" onchange="myFunction()"/>
+													<div class="control__indicator"></div>
+												</label>
+												<label class="control control--radio">
+													Données sur les polluants
+													<input type="radio" name="optradio" value="polluting" onchange="myFunction()"/>
+													<div class="control__indicator"></div>
+												</label>
+												<select class="form-control" th:field="*{typeData}" id="test">
+					  								<option th:each="type : ${typeslistclassics}" 
+							         						th:value="${type}" 
+							         						th:text="${type}">
+							    					</option>
+					  							</select>
+					  						</div>
+                               			</div>
+                           			</div>
+  							
+  									<div class="form-group">
+                                		<label class="col-sm-2 control-label">
+                                			Lieu
+                                			<span class="requeried"> *</span>
+                                		</label>
+                                		<div class="col-sm-10">
+                                			<select class="form-control" th:field="*{place}">
+					  							<option th:each="place: ${deplist}" 
+							         					th:value="${place}" 
+							         					th:text="${place}">
+							   			 		</option>
+					  						</select>
+                                		</div>
+                            		</div>
+                            
+                            		<div class="form-group" style="margin-top:224px;">
+                                		<label class="col-sm-2 control-label">
+                                			Sol
+                                			<span class="requeried"> *</span>
+                                		</label>
+                                		<div class="col-sm-10">
+                                			<select class="form-control" th:field="*{waterCatId}">
+					  							<option th:each="typeWater: ${type}" 
+							         					th:value="${typeWater.getId_category()}" 
+							         					th:text="${typeWater.getName()}">
+							   			 		</option>
+					  						</select>
+                                		</div>
+                           			</div>
+                           			
+                            		<div class="form-group text-center">
+                                		<button type="submit" id="submit_btn" class="btn btn-orange-md roboto">
+                                			Charger les données
+                                		</button>
+                            		</div>
+                        		</div>
+                    		</div>
+                		</div>
+            		</div>
+        		</form>
+        		
+        		<div style="margin-top:20px" th:if="${dataarrayavg != null}"> 	
+					<div class="col-md-10 col-md-offset-1" >
+    						<div th:id="*{donnees}" style="width: 100%;height:500px; "></div>
+					</div>
+				</div>			
+			</div>
+			
+			<div style="margin-top:20px; text-align:center; width:40%; margin-left:auto; margin-right:auto;"  class="alert alert-info" role="alert"  th:if="${dataarrayavg == null}">
+				Impossible : aucune donnée de ce type recueillie pour cette période
+            </div>
+		</div>
+		
+		<div th:replace="fragments/footer_admin :: footer-admin"/>
+		
+		<script type="text/javascript"
+						src="webjars/chartjs/2.7.0/Chart.min.js"/>
+		
+		<script type="text/javascript"
+	              src="webjars/echarts/3.2.3/echarts.min.js" />
+		
+		<script th:src="@{/js/sidebar.js}"></script>
+		<script th:inline="javascript">
+		//<![CDATA[
+		function myFunction(){
+			var classic = [[${typeslistclassics}]];
+			var polluting = [[${typeslistpolluting}]];
+
+			
+			var x=document.getElementById("test").innerHTML="";
+			
+			var selectedlist = document.querySelector('input[name = "optradio"]:checked').value;
+			console.log("selected list "+selectedlist)
+			
+			if(selectedlist.localeCompare("classic")==0){
+				console.log(classic);
+				for(var p=0;p<classic.length;p++){
+					document.getElementById("test").append(new Option(classic[p],classic[p]));
+				}
+			}
+			else {
+				console.log(polluting);
+				for(var p=0;p<polluting.length;p++){
+					document.getElementById("test").append(new Option(polluting[p],polluting[p]));
+				}
+			}
+
+		}
+		
+	$(document).ready(function(){
+		responsive();
+		
+		var datas = [[${dataarrayavg}]];
+		console.log(datas);
+		var mins = [[${mins}]];
+		var maxs = [[${maxs}]];
+		var label = [[${label}]];
+		var donneestype = [[${donnees}]];
+
+		$('#body_container').css('margin-left', $('#sidebar').width() + 10);
+		$('#admin_menu_link').click(function(){
+			if( $('#submenu_admin').is(':visible') )
+				$('#admin_caret').css("transform", "Rotate(0deg)");
+			else 
+				$('#admin_caret').css("transform", "Rotate(90deg)");
+
+			$('#submenu_admin').slideToggle();
+		});
+		
+		$('#user_menu_link').click(function(){
+			if( $('#submenu_user').is(':visible') )
+				$('#user_caret').css("transform", "Rotate(0deg)");
+			else
+				$('#user_caret').css("transform", "Rotate(90deg)");
+
+			$('#submenu_user').slideToggle();
+		});
+		
+		$('#statistics_menu_link').click(function(){
+			if( $('#submenu_statistics').is(':visible') )
+				$('#charts_caret').css("transform", "Rotate(0deg)");
+			else
+				$('#charts_caret').css("transform", "Rotate(90deg)");
+
+			$('#submenu_statistics').slideToggle();
+		});
+		
+		$(window).resize(function(){
+			responsive();
+		});
+		
+		function responsive(){
+			if($(window).width() <= 700){
+				$('.navbar-brand').html('<i class=\"fa fa-fw fa-bars\"></i>');
+			}
+			else if ($(window).width() > 700){
+				$('.navbar-brand').html('Administration');
+			}
+		}
+
+	
+		var myChart = echarts.init(document.getElementById(donneestype));
+		var dataTaux = [[${valuesForTaux}]];
+		var numbers = [[${number}]];
+		dataTaux = [25,25,75];
+        // specify chart configuration item and data
+        var option = {
+        	    backgroundColor: "#344b58",
+        	    "title": {
+        	        "text":donneestype ,
+        	        x: "4%",
+
+        	        textStyle: {
+        	            color: '#fff',
+        	            fontSize: '22'
+        	        },
+        	        subtextStyle: {
+        	            color: '#90979c',
+        	            fontSize: '16',
+
+        	        },
+        	    },
+        	    toolbox: {
+        	        show : true,
+        	        feature : {
+        	            mark : {show: true},
+        	            dataView : {show: true, readOnly: false},
+        	            magicType: {show: true, type: ['line', 'bar']},
+        	            restore : {show: true},
+        	            saveAsImage : {show: true}
+        	        }
+        	    },
+        	    "tooltip": {
+        	        "trigger": "axis",
+        	        "axisPointer": {
+        	            "type": "shadow",
+        	            textStyle: {
+        	                color: "#fff"
+        	            }
+
+        	        },
+        	    },
+        	    "grid": {
+        	        "borderWidth": 0,
+        	        "top": 100,
+        	        "bottom": 140,
+        	        textStyle: {
+        	            color: "#fff"
+        	        }
+        	    },
+        	    "legend": {
+        	        x: '4%',
+        	        top: '7%',
+        	        textStyle: {
+        	            color: '#90979c',
+        	        },
+        	        "data": [donneestype+' minimum', donneestype+' maximum', donneestype+' moyen','Nombre de données']
+        	    },
+        	     
+
+        	    "calculable": true,
+        	    "xAxis": [{
+        	        "type": "category",
+        	        "name": "Période",
+        	        "axisLine": {
+        	            lineStyle: {
+        	                color: '#90979c'
+        	            }
+        	        },
+        	        "splitLine": {
+        	            "show": false
+        	        },
+        	        "axisTick": {
+        	            "show": false
+        	        },
+        	        "splitArea": {
+        	            "show": false
+        	        },
+        	        "axisLabel": {
+        	            "interval": 0,
+        	            "rotate":45
+        	        },
+        	        "data": label,
+        	    }],
+        	    "yAxis": [{
+        	        "type": "value",
+        	        "name":"Valeur ()",
+        	        "splitLine": {
+        	            "show": false
+        	        },
+        	        "axisLine": {
+        	            lineStyle: {
+        	                color: '#90979c'
+        	            }
+        	        },
+        	        "axisTick": {
+        	            "show": false
+        	        },
+        	        "axisLabel": {
+        	            "interval": 0,
+
+        	        },
+        	        "splitArea": {
+        	            "show": false
+        	        },
+
+        	    }],
+        	    "dataZoom": [{
+        	        "show": true,
+        	        "height": 20,
+        	        "xAxisIndex": [
+        	            0
+        	        ],
+        	        bottom: 10,
+        	        "start": 0,
+        	        "end": 100,
+        	        handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+        	        handleSize: '110%',
+        	        handleStyle:{
+        	            color:"#d3dee5",
+        	            
+        	        },
+        	           textStyle:{
+        	            color:"#fff"},
+        	           borderColor:"#90979c"
+        	        
+        	        
+        	    }, {
+        	        "type": "inside",
+        	        "show": true,
+        	        "height": 15,
+        	        "start": 1,
+        	        "end": 35
+        	    },
+        	    {
+        	        "show": true,
+        	        "width" : 15,
+        	        oreint : "vertical",
+        	        "yAxisIndex": [
+        	            0
+        	        ],
+        			x:40,   
+        	        "start": 0,
+        	        "end": 100,
+        	        handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+        	        handleSize: '110%',
+        	        handleStyle:{
+        	        	color:"#d3dee5", 
+        	        },
+        	           textStyle:{
+        	           color:"#fff"},
+        	           borderColor:"#90979c"
+        	    }, {
+        	        "type": "inside",
+        	        "show": true,
+        	        "height": 10,
+        	        "start": 1,
+        	        "end": 35
+        	    }
+        	    ],
+        	    "series": [{
+        	            "name": donneestype+" minimum",
+        	            "type": "bar",
+        	            "stack": " minimum",
+        	            "barMaxWidth": 35,
+        	            "barGap": "10%",
+        	            "itemStyle": {
+        	                "normal": {
+        	                    "color": "rgba(255,144,128,1)",
+        	                    "label": {
+        	                        "show": true,
+        	                        "textStyle": {
+        	                            "color": "#fff"
+        	                        },
+        	                        "position": "insideTop",
+        	                        formatter: function(p) {
+        	                            return p.value > 0 ? (p.value) : '';
+        	                        }
+        	                    }
+        	                }
+        	            },
+        	            "data":mins,
+        	        },
+
+        	        {
+        	            "name":  donneestype+" maximum",
+        	            "type": "bar",
+        	            "stack":  "maximum",
+        	            "barMaxWidth": 35,
+        	            "barGap": "10%",
+        	            "itemStyle": {
+        	                "normal": {
+        	                    "color": "rgba(0,191,183,1)",
+        	                    "barBorderRadius": 0,
+        	                    "label": {
+        	                        "show": true,
+        	                        "position": "top",
+        	                        formatter: function(p) {
+        	                            return p.value > 0 ? (p.value) : '';
+        	                        }
+        	                    }
+        	                }
+        	            },
+        	            "data": maxs
+        	        }, {
+        	            "name":  donneestype+" moyen",
+        	            "type": "line",
+        	            "stack": " moyen",
+        	            symbolSize:10,
+        	            symbol:'circle',
+        	            "itemStyle": {
+        	                "normal": {
+        	                    "color": "rgba(252,230,48,1)",
+        	                    "barBorderRadius": 0,
+        	                    "label": {
+        	                        "show": true,
+        	                        "position": "top",
+        	                        formatter: function(p) {
+        	                            return p.value > 0 ? (p.value.toPrecision(4)) : '';
+        	                        }
+        	                    }
+        	                }
+        	            },
+        	            "data":datas
+        	        },   {
+        	            "name":  "Nombre de données",
+        	            "type": "line",
+        	            "stack": "Nombre de données",
+        	            symbolSize:5,
+        	            symbol:'circle',
+        	            "itemStyle": {
+        	                "normal": {
+        	                    "color": "rgba(22,20,48,0.5)",
+        	                    "barBorderRadius": 0,
+        	                }
+        	            },
+        	            "data":numbers
+        	        },
+        	    ]
+        	}
+        // use configuration item and data specified to show chart
+        myChart.setOption(option);
+	
+	});
+	//]]>
+		</script>
+		
+	</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Documentation | GreenWave</title>
+
+	<div th:replace="fragments/header_public :: header-public-css"/>
+			<link rel="stylesheet" th:href="@{/css/wiki.css}"
+	              href="../../css/wiki.css" />
+			<link rel="stylesheet" th:href="@{/css/publicArea.css}"
+	              href="../../css/publicArea.css" />	
+	         
+	      
+	         
+</head>
+<body>
+	<div th:replace="fragments/header_public :: header-public"/>
+	
+	<div class="page-content">
+		<div class="container-fluid zonePublic firstZone" id="body_content">
+				<div class="row text-center title_bloc">
+					<h3 class="uppercase">DOCUMENTATION</h3>
+					<div class="line"></div>
+				</div>
+		</div>	
+		<div class= "doc-container">
+		<!-- SIDEBAR -->
+			<div class="sidebar">
+				<div class="sidebar-content">
+					<ul class="Navigation">
+						<li>
+							<i class="glyphicon glyphicon-tint"></i> <span>EAU</span>
+			           
+						<ul th:each="w: ${name}">
+						
+							<a  href="#" onclick="getdoc(this)">
+							<form class="form" th:action="@{/wiki}" id="nom" method="post" th:object="${wikiForm}" style="display:none">
+								<input type="text"  id="name" name="name" th:value= "${{w.getNom()}}"></input>
+								<input type="submit" value="getDoc" class="validation"></input>
+							</form>
+								<span th:text="${{w.getNom()}}"></span>
+							</a>
+							
+						</ul> 
+						
+						</li>
+						<li>
+							<i class="glyphicon glyphicon-leaf"></i> <span>AIR</span>
+			           
+			               <ul th:each="w: ${nameAir}">
+							<li>
+							<a  href="#" onclick="getdoc(this)">
+							<form class="form" th:action="@{/wiki}" id="nom" method="post" th:object="${wikiForm}" style="display:none">
+								<input type="text"  id="name" name="name" th:value= "${{w.getNom()}}"></input>
+								<input type="submit" value="getDoc" class="validation"></input>
+							</form>
+								<span th:text="${{w.getNom()}}"></span>
+							</a>
+							</li>
+						</ul> 
+				
+						</li>
+						<li>
+							<i class="glyphicon glyphicon-globe"></i> <span>SOLS</span>
+			               <ul th:each="w: ${nameEarth}">
+							<li>
+							<a  href="#" onclick="getdoc(this)">
+							<form class="form" th:action="@{/wiki}" id="nom" method="post" th:object="${wikiForm}" style="display:none">
+								<input type="text"  id="name" name="name" th:value= "${{w.getNom()}}"></input>
+								<input type="submit" value="getDoc" class="validation"></input>
+							</form>
+								<span th:text="${{w.getNom()}}"></span>
+							</a>
+							</li>
+						</ul> 
+				
+						</li>
+					</ul>
+			</div>
+				
+			
+			</div>
+		<!-- PAGE CONTENT -->
+			<div class="content-wrapper">
+				<div id="row">
+
+					<div th:if="${wikiInfo}"  class="col-xs-4">
+					
+						<div class="item">
+						
+							<span class="stats_title"><u>Dénomination de l'indicateur</u></span>
+						
+							<p style="font-size:20px; color:#000" th:text="${wikiInfo.getNom()}"></p>
+						</div>
+						<div class="item">
+							<span class="stats_title"><u>Déscription de l'indicateur</u></span>
+							<br/><br/>
+							<p  style="font-size:20px; color:#000" th:text="${wikiInfo.getDescription()}"></p>
+						</div>
+						<div class= "item">
+							<span class="stats_title"><u>Min</u></span>
+							<br/><br/>
+							<p style="font-size:20px; color:#000" th:text="${wikiInfo.getMin()}"></p>
+						</div>
+						<div class="item">
+							<span class="stats_title"><u>Max</u></span>
+							<br/><br/>
+							<p  style="font-size:20px; color:#000" th:text="${wikiInfo.getMax()}"></p>
+						</div>
+						<div class="item">
+							<span class="stats_title"><u>Risques</u></span>
+							<br/><br/>
+							<p  style="font-size:20px; color:#000" th:text="${wikiInfo.getRisque()}">   </p>
+						</div>
+					</div>
+
+				</div>
+			
+				
+			</div>
+			
+		
+		</div>
+		
+		
+		
+	
+</div>
+	<script>
+	function getdoc(element){
+		console.log(element);
+		element.querySelector("form").submit();
+	}
+	</script>
+<div id="footer">
+<div th:replace="fragments/footer_public :: footer-public"/>
+</div>
+</body>
+</html>

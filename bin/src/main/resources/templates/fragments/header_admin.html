@@ -1,0 +1,176 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	    <div th:fragment="header-admin-css">
+	        <link rel="stylesheet" type="text/css"
+	              href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+			
+			<link rel="stylesheet" type="text/css"
+	              href="webjars/fontawesome/4.6.3/css/font-awesome.min.css" />
+	              
+	        <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}"
+	              href="../../css/admin/dashboard.css" />
+	              
+	        <link rel="stylesheet" th:href="@{/css/admin/menu.css}"
+	              href="../../css/admin/menu.css" />
+	    </div>
+	</head>
+	
+	<body>
+	
+		<div th:fragment="header-admin">
+		
+    		<header>
+				<nav class="nav navbar-inverse">
+					<div class="container-fluid">
+						<div class="navbar-header">
+							<a class="navbar-brand" href="/dashboard">Administration</a>
+							<ul class="nav navbar-nav navbar-right">
+								<li>
+									<a href="#">
+										<span class="glyphicon glyphicon-user"></span> 
+										<span th:text="${username}"></span> 
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					
+					<ul class="nav side-nav" th:id="sidebar">
+						<li class="active side_nav_item" >
+							<a class="side_nav_item_text" th:href="@{/dashboard}">
+								<i class="fa fa-fw fa-dashboard"></i> Tableau de bord
+							</a>
+						</li>
+						<li class="side_nav_item" sec:authorize="hasRole('ROLE_ORGANIZATION')">
+							<a class="side_nav_item_text" id="admin_menu_link">
+								<i class="fa fa-fw fa-user-secret"></i> 
+								Administrateurs
+								<i id="admin_caret" class="toggle_caret fa fa-fw fa-caret-right"></i>
+							</a>
+							<ul class="submenu" id="submenu_admin">
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/adminForm}">
+										<i class="fa fa-fw fa-caret-right"></i>Création
+									</a>
+								</li>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/adminList}">
+										<i class="fa fa-fw fa-caret-right"></i>Consultation
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="side_nav_item" sec:authorize="hasAnyRole('ROLE_ORGANIZATION', 'ROLE_ADMIN')">
+							<a class="side_nav_item_text" id="user_menu_link">
+								<i class="fa fa-fw fa-users"></i> 
+								Utilisateurs 
+								<i id="user_caret" class="toggle_caret fa fa-fw fa-caret-right"></i>
+							</a>
+							<ul class="submenu" id="submenu_user">
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/userForm}">
+										<i class="fa fa-fw fa-caret-right"></i>Création
+									</a>
+								</li>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/userList}">
+										<i class="fa fa-fw fa-caret-right"></i>Consultation
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="side_nav_item">
+							<a class="side_nav_item_text" id="statistics_menu_link">
+								<i class="fa fa-fw fa-pie-chart"></i> 
+								Statistiques
+								<i id="charts_caret" class="toggle_caret fa fa-fw fa-caret-right"></i>
+							</a>
+							<ul class="submenu" id="submenu_statistics">
+								<a class="submenu_item_text">
+									<span class="itemIcon glyphicon glyphicon-tint " aria-hidden="true"></span>
+									EAU
+								</a>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/waterCharts}">
+										<i class="fa fa-fw fa-caret-right"></i>Graphiques
+									</a>
+								</li>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/mapInteractiveWater}">
+										<i class="fa fa-fw fa-caret-right"></i>Carte interactive
+									</a>
+								</li>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/dataExportWater}">
+										<i class="fa fa-fw fa-caret-right"></i>Exporter
+									</a>
+								</li>
+								<a class="submenu_item_text">
+									<span class="itemIcon glyphicon glyphicon-leaf" aria-hidden="true"></span>
+									AIR
+								</a>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/airCharts}">
+										<i class="fa fa-fw fa-caret-right"></i>Graphiques
+									</a>
+								</li>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/mapInteractiveAir}">
+										<i class="fa fa-fw fa-caret-right"></i>Carte interactive
+									</a>
+								</li>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/dataExportAir}">
+										<i class="fa fa-fw fa-caret-right"></i>Exporter
+									</a>
+								</li>
+								<a class="submenu_item_text">
+									<i class="glyphicon glyphicon-globe"></i>
+									SOL
+								</a>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/earthCharts}">
+										<i class="fa fa-fw fa-caret-right"></i>Graphiques
+									</a>
+								</li>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/mapInteractiveEarth}">
+										<i class="fa fa-fw fa-caret-right"></i>Carte interactive
+									</a>
+								</li>
+								<li class="submenu_item">
+									<a class="submenu_item_text" th:href="@{/dataExportEarth}">
+										<i class="fa fa-fw fa-caret-right"></i>Exporter
+									</a>
+								</li>
+							</ul>
+						</li>
+					
+						<li class="side_nav_item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')">
+							<a class="side_nav_item_text" th:href="@{/profile}">
+								<i class="fa fa-fw fa-user"></i> Profil
+							</a>
+						</li>
+						
+						<li class="side_nav_item" sec:authorize="hasAnyRole('ROLE_ORGANIZATION', 'ROLE_ADMIN')">
+							<a class="side_nav_item_text" th:href="@{/dataOpen}">
+								<i class="fa fa-fw fa-server"></i> Open Data
+							</a>
+						</li>
+						
+						<li class="side_nav_item">
+							<a th:href="@{/logout}" class="side_nav_item_text">
+								<i class="fa fa-fw fa-power-off"></i> Déconnexion
+							</a>
+						</li>
+					</ul>
+
+				</nav>
+			</header>
+    	
+		</div>
+
+	</body>
+</html>

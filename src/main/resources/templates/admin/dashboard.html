@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Administration - Dashboard | GreenWave</title>
+	
+	    <div th:replace="fragments/header_admin :: header-admin-css"/>
+	
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_admin :: header-admin"/>	
+		
+		<div class="container_fluid" id="body_container">
+		
+			<div class="row">
+				<div class="page-header" id="header_admin">
+					<h1>
+						Tableau de bord 
+						<small>Statistiques générales</small>
+					</h1>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-lg-3 col-md-3">
+					<div class="container_number" id="first_container">
+						<div class="col-xs-3 logo_number">
+							<i class="fa fa-fw fa-bar-chart"></i>
+						</div>
+						<div class="text-number col-xs-9 text-right">						
+							<span class="big_number" th:text="${number[0]}"></span> <br/>
+							<span th:text="${dashboard_numbers[0]}"></span> 
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3">
+					<div class="container_number" id="second_container">
+						<div class="col-xs-3 logo_number">
+							<i class="fa fa-fw fa-user-secret"></i>
+						</div>
+						<div class="text-number col-xs-9 text-right">
+							<span class="big_number" th:text="${number[1]}"></span> <br/>
+							<span th:text="${dashboard_numbers[1]}"></span>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3">
+					<div class="container_number" id="third_container">
+						<div class="col-xs-3 logo_number">
+							<i class="fa fa-fw fa-users"></i>
+						</div>
+						<div class="text-number col-xs-9 text-right">
+							<span class="big_number" th:text="${number[2]}"></span> <br/>
+							<span th:text="${dashboard_numbers[2]}"></span>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3">
+					<div class="container_number" id="fourth_container">
+						<div class="col-xs-3 logo_number">
+							<i class="fa fa-fw fa-institution"></i>
+						</div>
+						<div class="text-number col-xs-9 text-right">
+							<span class="big_number" th:text="${number[3]}">20</span> <br/>
+							<span th:text="${dashboard_numbers[3]}"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row" >
+				<div class="col-md-6" th:each="graph_title : ${graph_titles}">
+				<div class="panel panel-default">
+					<div class="panel-heading" th:text="${graph_title}"></div>
+					<div class="panel-body">
+					 	<canvas th:id="chart+${graph_titleStat.index}"></canvas>	
+					</div>
+				</div>	
+				</div>
+			</div>
+			<div id="main" style="width: 50%; height: 400px;"></div>
+		
+		</div>
+		
+		<div th:replace="fragments/footer_admin :: footer-admin"/>
+		
+		<script type="text/javascript"
+						src="webjars/chartjs/2.7.0/Chart.min.js"/>
+		
+		<link rel="stylesheet" type="text/css"
+	              href="webjars/echarts/3.2.3/echarts.min.js" />
+	              
+		<script th:inline="javascript">
+			//<![CDATA[
+			$(document).ready(function(){
+				responsive();
+				var test = [[${number}]];
+				console.log(test);
+				var graph = [[${graph_titles}]];
+				var datas = [[${data}]];
+				var caption = [[${graph_captions}]];
+				
+				for(var i=0;i<graph.length;i++){
+					var ctx = document.getElementById("chart"+i).getContext('2d');
+					var myChart = new Chart(ctx, {
+					  type: 'bar',
+					  data: {	
+					    labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet','Aout','Septembre','Octobre','Novembre','Décembre'],
+					    datasets: [{
+					      label: caption[i],
+					      data: datas[i],
+					      backgroundColor: [
+				                'rgba(255, 99, 132, 0.2)',
+				                'rgba(54, 162, 235, 0.2)',
+				                'rgba(255, 206, 86, 0.2)',
+				                'rgba(75, 192, 192, 0.2)',
+				                'rgba(153, 102, 255, 0.2)',
+				                'rgba(255, 159, 64, 0.2)',
+				                'rgba(255, 99, 132, 0.2)',
+				                'rgba(54, 162, 235, 0.2)',
+				                'rgba(255, 206, 86, 0.2)',
+				                'rgba(75, 192, 192, 0.2)',
+				                'rgba(153, 102, 255, 0.2)',
+				                'rgba(255, 159, 64, 0.2)',
+
+
+				            ],
+				            borderColor: [
+				                'rgba(255,99,132,1)',
+				                'rgba(54, 162, 235, 1)',
+				                'rgba(255, 206, 86, 1)',
+				                'rgba(75, 192, 192, 1)',
+				                'rgba(153, 102, 255, 1)',
+				                'rgba(255, 159, 64, 1)',
+				                'rgba(255,99,132,1)',
+				                'rgba(54, 162, 235, 1)',
+				                'rgba(255, 206, 86, 1)',
+				                'rgba(75, 192, 192, 1)',
+				                'rgba(153, 102, 255, 1)',
+				                'rgba(255, 159, 64, 1)'
+				            ],
+					    }]
+					  }
+					
+					});
+				}
+				
+				$('#body_container').css('margin-left', $('#sidebar').width() + 10);
+				$('#admin_menu_link').click(function(){
+					if( $('#submenu_admin').is(':visible') )
+						$('#admin_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#admin_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_admin').slideToggle();
+				});	
+				
+				$('#user_menu_link').click(function(){
+					if( $('#submenu_user').is(':visible') )
+						$('#user_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#user_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_user').slideToggle();
+				});
+				
+				$('#statistics_menu_link').click(function(){
+					if( $('#submenu_statistics').is(':visible') )
+						$('#charts_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#charts_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_statistics').slideToggle();
+				});
+				
+				$(window).resize(function(){
+					responsive();
+				});
+				
+				function responsive(){
+					if($(window).width() <= 700){
+						$('.navbar-brand').html('<i class=\"fa fa-fw fa-bars\"></i>');
+					}
+					else if ($(window).width() > 700){
+						$('.navbar-brand').html('Administration');
+					}
+					else if($(window).width() <= 500){
+						$('.logo_number').hide();
+						if($('.text-number').hasClass('text-right'))
+							$('.text-number').removeClass('text-right');
+					}
+					else if ($(window).width() > 500)
+					{
+						$('.logo_number').show();
+						if(!$('.text-number').hasClass('text-right'))
+							$('.text-number').addClass('text-right');
+					}
+				}
+				
+			});
+			//]]>
+			
+		</script>
+		
+	</body>
+</html>

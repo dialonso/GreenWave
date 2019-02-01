@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Administration - Profil | GreenWave</title>
+	
+	    <div th:replace="fragments/header_admin :: header-admin-css"/>
+	    
+	    <link rel="stylesheet" th:href="@{/css/admin/admin.css}"
+	              href="../../css/admin/admin.css" />
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_admin :: header-admin"/>	
+		
+		<div class="container_fluid" id="body_container">
+		    <div class="row">
+				<div class="page-header" id="header_admin">
+					<h1>
+						Tableau de bord
+						<small>Profil</small>
+					</h1>
+				</div>
+			</div>
+			
+			<div class="row" th:if="${user} != null">
+                <div class="col-md-10 col-sm-10 col-xs-10">
+                    <form action="#" th:action="@{/profileUpdate}" th:object="${userForm}" method="post">
+                    	<fieldset class="col-lg-5 col-md-10 col-sm-10 form-group">
+							<legend>Informations générales</legend>
+							<div class="form-group">
+								<input type="text" th:placeholder="${user.lName}" name="admin_lname" id="admin_lname" th:field="*{lastName}"/>
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" >
+									Champ invalide
+		                		</div>
+							</div>
+	                     	<div class="form-group">
+								<input type="text" th:placeholder="${user.fName}" name="admin_fname" id="admin_fname" th:field="*{forName}" />
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('forName')}" th:errors="*{forName}" >
+									Champ invalide
+		                		</div>
+							</div>
+							
+							<div class="select_field form-group" th:with="occupList= ${ {'Chercheur', 'Scientifique'} }">
+								<select class="form-control" th:field="*{occup}">
+									<option th:each="occup : ${occupList}" th:value="${occup}" th:text="${occup}">Occupation</option>
+								</select>
+							</div>
+							
+							<div class="form-group">
+								<input type="text" name="admin_addr" id="admin_addr" th:placeholder="${user.localization_data.complete_address}" th:field="*{adress}"/>
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}" >
+									Champ invalide
+		                		</div>
+							</div>
+							
+							<div class="select_field form-group" th:if="${admin}==true" >
+								<select class="form-control" th:selected="${user.organization.organization_name}">
+									<option th:each="orga : ${ {'Gouvernement','Mairie'} }" 
+									th:value="${orga}" 
+									th:text="${orga}">Organisation</option>
+								</select>
+							</div>						
+						</fieldset>
+						
+						<fieldset class="col-lg-5 col-md-10 col-sm-10 form-group">
+							<legend>Informations de connexion</legend>
+							<div class="form-group">
+								<input type="text" placeholder="Identifiant" name="login" id="login" th:placeholder="${user.account.login}" th:field="*{username}"/>
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('username')}" th:errors="*{username}" >
+									Nom d'utilisateur invalide
+		                		</div>
+							</div>
+							<div class="form-group">
+								<input id="password" type="password" name="password" placeholder="Mot de passe actuel" th:field="*{password}" />
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" >
+									Mot de passe invalide
+		                		</div>
+         		                <div class="alert alert-danger" role="alert"  th:if="${password_error != null}" th:text="${password_error}" >
+                    			</div>
+							</div>
+							<div class="form-group">
+								<input id="new_password" type="password" name="new_password" placeholder="Nouveau mot de passe" th:field="*{new_password}" />
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('new_password')}" th:errors="*{new_password}" >
+									Mot de passe invalide
+		                		</div>
+		                		<div class="alert alert-danger" role="alert"  th:if="${same_pass_error != null}" th:text="${same_pass_error}" >
+                    			</div>
+							</div>
+							<div class="form-group">
+								<input id="password" type="password" name="confirm_new_password" placeholder="Confirmation du mot de passe" th:field="*{confirmPassword}" />
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" >
+									Mot de passe invalide
+		                		</div>
+		                		<div class="alert alert-danger" role="alert"  th:if="${match_error != null}" th:text="${match_error}" >
+                    			</div>
+							</div>
+							<button class="btn btn-primary" type="submit">Mettre à jour vos informations</button>
+						</fieldset>
+						
+                    </form>     
+                    <br />           
+                    <div class="alert alert-success" role="alert"  th:if="${success != null}" th:text="${success}" >
+                    </div>
+                    
+                    <div class="alert alert-danger" role="alert"  th:if="${error_exists != null}" th:text="${error_exists}" >
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row" th:if="${user} == null">
+            	<div class="alert alert-warning">
+            		<b>Attention:</b> Vous n'êtes pas connecté.
+            	</div>
+            </div>
+		</div>
+		
+		<div th:replace="fragments/footer_admin :: footer-admin"/>
+		
+		<script>
+			//<![CDATA[
+			$(document).ready(function(){
+				responsive();
+				$('.select_field').width($('input').outerWidth());
+				$('#body_container').css('margin-left', $('#sidebar').width() + 10);
+				$('#admin_menu_link').click(function(){
+					if( $('#submenu_admin').is(':visible') )
+						$('#admin_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#admin_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_admin').slideToggle();
+				});
+				
+				$('#user_menu_link').click(function(){
+					if( $('#submenu_user').is(':visible') )
+						$('#user_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#user_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_user').slideToggle();
+				});
+				
+				$('#statistics_menu_link').click(function(){
+					if( $('#submenu_statistics').is(':visible') )
+						$('#charts_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#charts_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_statistics').slideToggle();
+				});
+				
+				$(window).resize(function(){
+					responsive();
+				});
+				
+				function responsive(){
+					if($(window).width() <= 700){
+						$('.navbar-brand').html('<i class=\"fa fa-fw fa-bars\"></i>');
+					}
+					else if ($(window).width() > 700){
+						$('.navbar-brand').html('Administration');
+					}
+				}
+				
+			});
+			//]]>
+		</script>
+		
+	</body>
+</html>

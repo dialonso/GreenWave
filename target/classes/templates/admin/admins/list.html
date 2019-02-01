@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Administration - Liste des administrateurs | GreenWave</title>
+	
+	    <div th:replace="fragments/header_admin :: header-admin-css"/>
+		
+		<link rel="stylesheet" th:href="@{/css/admin/admin.css}"
+	              href="../../css/admin/admin.css" />
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_admin :: header-admin"/>	
+		
+		<div class="container-fluid" id="body_container">
+			<div class="row">
+				<div class="page-header" id="header_admin">
+					<h1>
+						Espace administrateur 
+						<small>Consultation des administrateurs</small>
+					</h1>
+				</div>
+			</div>
+			
+            <div class="row">
+            	<table id="list_users" th:if="${listAdmins != null and listAdmins.size() > 0}" class="table table-striped table-bordered">
+            		<tr>
+            			<th>
+            				#
+            			</th>
+            			<th>
+            				Nom
+            			</th>
+            			<th>
+            				Adresse
+            			</th>
+            			<th>
+            				Job
+            			</th>	
+            			<th>
+            				Action
+           				</th>
+            		</tr>
+            		<tr th:each="o:${listAdmins}" class="user_rows" th:id="row_+${o.id}">
+            			<td th:text="${o.id}"></td>
+            			<td th:text="${o.lName}  +' '+ ${o.fName}"></td>
+            			<td th:text="${o.localization_data.address}"></td>
+            			<td th:text="${o.job}"></td>    
+            			<td class="text-center" sec:authorize="hasRole('ROLE_ORGANIZATION')">
+            				<i title="Supprimer l'administrateur" class="delete_user fa fa-trash" th:id="delete_+${o.id}"></i>
+            			</td>        			
+            		</tr>
+            	</table>
+            	
+           	   	<div class="alert alert-info" role="alert"  th:if="${listAdmins ==  null or listAdmins.size() == 0}">
+       	        	<b>Information: </b> 
+       	        	Il semblerait qu'il n'y ait aucun administrateur enregistré. Vous pouvez en ajouter
+       	        	<a href="/admin" title="Créer un administrateur GreenWave">ici.</a>
+                </div>
+                
+                <div class="alert alert-info" style="display: none;" id="info_no_user" role="alert">
+       	        	<b>Information: </b> 
+       	        	Il semblerait qu'il n'y ait aucun administrateur enregistré. Vous pouvez en ajouter
+       	        	<a href="/admin" title="Créer un administrateur GreenWave">ici.</a>
+                </div>
+                
+                  <div class="alert alert-info"  id="info_error" role="alert" th:text="${erreurDel}">
+       	        	
+                </div>
+            </div>
+        </div>
+		
+		<div th:replace="fragments/footer_admin :: footer-admin"/>
+		
+		<script>
+			//<![CDATA[
+			$(document).ready(function(){
+				responsive();
+				
+				$('#body_container').css('margin-left', $('#sidebar').width() + 10);
+				
+				$('.delete_user').click(function(){
+					var id = $(this).attr('id');
+					var id_user = id.split("_")[1];
+					$.ajax({
+						url: "/adminDelete",
+						method: "GET",
+						data: "id="+id_user,
+						success: function(resp){
+							if(resp['success'])
+							{
+								$('#row_'+id_user).remove();
+								if ($('.user_rows').length == 0)
+								{
+									$('#list_users').remove();
+									$('#info_no_user').show();
+								}
+							}
+						},
+						error: function(e){
+							console.error(e);
+						}
+					});
+				});
+				
+				$('#admin_menu_link').click(function(){
+					if( $('#submenu_admin').is(':visible') )
+						$('#admin_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#admin_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_admin').slideToggle();
+				});
+				
+				$('#user_menu_link').click(function(){
+					if( $('#submenu_user').is(':visible') )
+						$('#user_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#user_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_user').slideToggle();
+				});
+				
+				$('#statistics_menu_link').click(function(){
+					if( $('#submenu_statistics').is(':visible') )
+						$('#charts_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#charts_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_statistics').slideToggle();
+				});
+				
+				$(window).resize(function(){
+					responsive();
+				});
+				
+				function responsive(){
+					if($(window).width() <= 700){
+						$('.navbar-brand').html('<i class=\"fa fa-fw fa-bars\"></i>');
+					}
+					else if ($(window).width() > 700){
+						$('.navbar-brand').html('Administration');
+					}
+				}
+			});
+			//]]>
+		</script>
+		
+	</body>
+</html>

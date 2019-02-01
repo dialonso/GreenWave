@@ -1,0 +1,488 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Espace public | GreenWave</title>
+	 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	    <div th:replace="fragments/header_public :: header-public-css"/>
+		
+		
+		<link rel="stylesheet" th:href="@{/css/publicArea.css}"
+	              href="../../css/publicArea.css" />		
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_public :: header-public"/>
+	
+		<div class="container-fluid zonePublic firstZone" id="body_content">
+			<div class="row text-center title_bloc">
+				<h3 class="uppercase">QUALITé DE L'ENVIRONNEMENT PAR REGION</h3>
+				<div class="line"></div>
+			</div>
+			
+			<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12 col-xs-offset-0">
+				<form id="regionSelector" method="POST" action="#">
+					<div class="form-group text-center">
+						 <select name="region" id="regionSel" class="form-control" >
+							<option value="aura" selected="selected">Rhône-Alpes-Auvergne</option>
+							<option value="hf">Hauts de France</option>
+							<option value="na">Nouvelle-Aquitaine</option>
+							<option value="occ">Occitanie</option>
+							<option value="corse">Corse</option>
+							<option value="paca">PACA</option>
+							<option value="idf">Ile de France</option>
+							<option value="brz">Bretagne</option>
+							<option value="nor">Normandie</option>
+							<option value="ge">Grand Est</option>
+							<option value="bfc">Bourgogne - Franche Comté</option>
+							<option value="cvl">Centre Val de Loire</option>
+							<option value="pdl">Pays de la Loire</option>
+							<option value="domtom">DOM-TOM</option>
+						</select>
+					</div>
+				</form>
+         	</div>
+		
+			<div class="container">
+				<section>
+					<div class="row">
+				  		<div class="col-sm-4 col-md-4 col-xs-12 text-center">
+				      		<div class="caption">
+					        	<canvas id="foo"></canvas>
+					        	<span id="gauge-value"></span>
+					    		<h4 id="g1" class="uppercase"> QUALITé DE L'EAU EN REGION <span class="regionDisplay">RHONE - ALPES - AUVERGNE </span></h4>
+					      	</div>
+					   	</div>
+
+					  	<div class="col-sm-4 col-md-4  col-xs-12 text-center">
+					    	<div class="caption">
+					        	<canvas id="foo2"></canvas>
+					    		<h4 id="g2" class="uppercase"> QUALITé DE L'AIR EN REGION <span class="regionDisplay">RHONE - ALPES - AUVERGNE </span> </h4>
+					      	</div>
+					    </div>
+					    
+					    <div class="col-sm-4 col-md-4 col-xs-12 text-center">
+				      		<div class="caption">
+				        		<canvas id="foo3"></canvas>
+				        		<h4 id="g3" class="uppercase"> QUALITé DES SOLS EN REGION <span class="regionDisplay">RHONE - ALPES - AUVERGNE </span> </h4>
+				      		</div>
+				      	</div>
+					</div>
+			  </section>
+			</div>
+		</div>
+		
+		<div id="parralax-section"></div>
+	 
+	  	<div class="container zonePublic">  
+			<div class="row text-center title_bloc">
+				<h3 class="uppercase">LES MESURES EFFETUéES PRES DE CHEZ-VOUS</h3>
+				<div class="line"></div>
+			</div>
+	
+			<div class="col-md-12 col-sm-12 col-xs-12" id="domainSelectorContainer">	
+				<div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
+			        <div class="btn-group domaineSelector" role="group">
+			            <button type="button" id="waterDom" class="btn btn-primary" href="#tab1" data-toggle="tab"><span class="itemIcon glyphicon glyphicon-tint " aria-hidden="true"></span>
+			                <div class="hidden-xs">Domaine de l'eau</div>
+			            </button>
+			        </div>
+			        <div class="btn-group" role="group">
+			            <button type="button" id="airDom" class="btn btn-default" href="#tab2" data-toggle="tab"><span class="itemIcon glyphicon glyphicon-plane" aria-hidden="true"></span>
+			                <div class="hidden-xs">Domaine de l'air</div>
+			            </button>
+			        </div>
+			        <div class="btn-group" role="group">
+			            <button type="button" id="earthDom" class="btn btn-default" href="#tab3" data-toggle="tab"><span class="itemIcon glyphicon glyphicon-leaf" aria-hidden="true"></span>
+			                <div class="hidden-xs">Domaine des sols</div>
+			            </button>
+			        </div>
+	    		</div>
+
+	        	<div class="well">
+		      		<div class="tab-content">
+		        		<div class="tab-pane active" id="tab1">
+		          			<div class="row">
+		           			<div class="col-md-6 col-sm-4 col-xs-12">
+		           				<div id="map"></div>
+		           			</div>
+		           	 		<div class="col-md-6 col-sm-8 col-xs-12">
+		           	 			<div class="text-center">
+		           	 				<span class="upperTitle" >POSITION : </span>  
+		           	 				<span class="regionDisplay">RHONE - ALPES - AUVERGNE </span>
+		           	 			</div>
+		           				<table class="table table-striped custab">
+							    	<thead>
+								        <tr>
+								            <th class="text-center">Mesure</th>
+								            <th class="text-center">Valeur</th>
+								            <th class="text-center">Date</th>
+								            <th class="text-center">Fiche d'information</th>
+								        </tr>
+								    </thead>
+								    <tbody  id="listDatas">
+								    
+								    </tbody>
+						 		</table>
+		           			</div>
+		       			</div>
+		     		</div>
+		     
+			        <div class="tab-pane fade in" id="tab2">
+			          <div class="row">
+		           			<div class="col-md-6 col-sm-4 col-xs-12">
+		           				<div id="mapAir"></div>
+		           			</div>
+		           	 		<div class="col-md-6 col-sm-8 col-xs-12">
+		           	 			<div class="text-center">
+		           	 				<span class="upperTitle" >POSITION : </span>  
+		           	 				<span class="regionDisplay">RHONE - ALPES - AUVERGNE </span>
+		           	 			</div>
+		           				<table class="table table-striped custab">
+							    	<thead>
+								        <tr>
+								            <th class="text-center">Mesure</th>
+								            <th class="text-center">Valeur</th>
+								            <th class="text-center">Date</th>
+								            <th class="text-center">Fiche d'information</th>
+								        </tr>
+								    </thead>
+								    <tbody id="listDatasAir">
+								    	
+								    </tbody>
+						 		</table>
+		           			</div>
+		       			</div>
+			        </div>
+	        
+	        
+			        <div class="tab-pane fade in" id="tab3">
+			          <div class="row">
+		           			<div class="col-md-6 col-sm-4 col-xs-12">
+		           				<div id="mapEarth"></div>
+		           			</div>
+		           	 		<div class="col-md-6 col-sm-8 col-xs-12">
+		           	 			<div class="text-center">
+		           	 				<span class="upperTitle" >POSITION : </span>  
+		           	 				<span class="regionDisplay">RHONE - ALPES - AUVERGNE </span>
+		           	 			</div>
+		           				<table class="table table-striped custab">
+							    	<thead>
+								        <tr>
+								            <th class="text-center">Mesure</th>
+								            <th class="text-center">Valeur</th>
+								            <th class="text-center">Date</th>
+								            <th class="text-center">Fiche d'information</th>
+								        </tr>
+								    </thead>
+								    <tbody id="listDatasEarth">
+
+								    </tbody>
+						 		</table>
+		           			</div>
+		       			</div>
+			        </div>
+	    		</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div th:replace="fragments/footer_public :: footer-public"/>
+	
+	<script type="text/javascript"
+		src="webjars/gauge.js/1.3.2/dist/gauge.min.js"></script>
+	
+
+				
+	<script>
+  		var map,mapAir,mapEarth;
+	  	var antennasCircle,antennasCircle2;
+	  	var lat,lng,coords;
+	  	var i=0;
+ 		
+	  	function myMap() {
+ 			map = new google.maps.Map(document.getElementById('map'), {
+		    	scrollwheel: true,
+		     	mapTypeControl: false,
+		     	center: {
+		       		lat: 46.116667,
+		       		lng: 3.416667
+		     	},
+		     	zoom: 9,
+		     	streetViewControl: false,
+		     	zoomControl: true
+    		});
+ 			var marker = new google.maps.Marker({
+ 		          position: {
+ 			       		lat: 46.116667,
+ 			       		lng: 3.416667
+ 			     	},
+ 		          map: map,
+ 		         
+ 		        });
+ 			marker.addListener('click', function() {
+ 		          $("#listDatas").html("");
+ 		          var str = "<tr><td>pH</td><td>7</td><td>17/01/2018</td><td></td></tr>";
+ 		         $("#listDatas").html(str);
+ 		        });
+ 			
+ 			mapAir = new google.maps.Map(document.getElementById('mapAir'), {
+		    	scrollwheel: true,
+		     	mapTypeControl: false,
+		     	center: {
+		       		lat: 46.116667,
+		       		lng: 3.416667
+		     	},
+		     	zoom: 9,
+		     	streetViewControl: false,
+		     	zoomControl: true
+    		});
+ 			var marker = new google.maps.Marker({
+		          position: {
+			       		lat: 46.156667,
+			       		lng: 3.486667
+			     	},
+		          map: mapAir,
+		         
+		        });
+			marker.addListener('click', function() {
+		          $("#listDatasAir").html("");
+		          var str = "<tr><td>Température</td><td>7</td><td>17/01/2018</td><td></td></tr>";
+		         $("#listDatasAir").html(str);
+		        });
+			
+			var marker2 = new google.maps.Marker({
+		          position: {
+			       		lat: 46.056667,
+			       		lng: 3.286667
+			     	},
+		          map: mapAir,
+		         
+		        });
+			marker2.addListener('click', function() {
+		          $("#listDatasAir").html("");
+		          var str = "<tr><td>Température</td><td>5</td><td>17/01/2018</td><td></td></tr><tr><td>pm25</td><td>55</td><td>17/01/2018</td><td></td></tr>";
+		         $("#listDatasAir").html(str);
+		        });
+			
+ 			mapEarth = new google.maps.Map(document.getElementById('mapEarth'), {
+		    	scrollwheel: true,
+		     	mapTypeControl: false,
+		     	center: {
+		       		lat: 46.116667,
+		       		lng: 3.416667
+		     	},
+		     	zoom: 9,
+		     	streetViewControl: false,
+		     	zoomControl: true
+    		});
+		}
+	  	
+
+	</script>
+
+	<!--
+	To use this code on your website, get a free API key from Google.
+	Read more at: https://www.w3schools.com/graphics/google_maps_basic.asp
+	-->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbns5KFelTGVj8E8FHdlJfdM9lEHHo4OA&amp;callback=myMap" async="async" defer="defer"></script>
+
+
+	
+	<script>
+		$(document).ready(function(){
+			// smooth scroll
+			$('.smooth_scroll').on('click', function() {
+				var page = $(this).attr('href');
+				var speed = 750;
+				$('html, body').animate( { scrollTop: $(page).offset().top }, speed );
+				return false;
+			});
+	
+			// numbers animation
+			$('.count').each(function () {
+			    $(this).prop('Counter',0).animate({
+			        Counter: $(this).text()
+			    }, {
+			        duration: 4000,
+			        easing: 'swing',
+			        step: function (now) {
+			            $(this).text(Math.ceil(now));
+			        }
+			    });
+			});
+			
+		});
+	
+		var opts = {
+		  angle: 0.35, // The span of the gauge arc
+		  lineWidth: 0.17, // The line thickness
+		  radiusScale: 1, // Relative radius
+		  pointer: {
+		    length: 0.6, // // Relative to gauge radius
+		    strokeWidth: 0.035, // The thickness
+		  
+		  },
+
+		  limitMax: false,     // If false, max value increases automatically if value > maxValue
+		  limitMin: false,     // If true, the min value of the gauge will be fixed
+		  colorStop: '#2DADE2',    // just experiment with them
+		  strokeColor: '#4DDDD5',  // to see which ones work best for you
+		  generateGradient: true,
+		  highDpiSupport: true, 
+		      // High resolution support
+		}
+		
+		var opts2 = {
+		  angle: 0.35, // The span of the gauge arc
+		  lineWidth: 0.17, // The line thickness
+		  radiusScale: 1, // Relative radius
+		  pointer: {
+		    length: 0.6, // // Relative to gauge radius
+		    strokeWidth: 0.035, // The thickness
+		    color: '#000000' // Fill color
+		  },
+		  limitMax: false,     // If false, max value increases automatically if value > maxValue
+		  limitMin: false,     // If true, the min value of the gauge will be fixed
+		  colorStop: '#92d050',    // just experiment with them
+		  strokeColor: '#D2F084',  // to see which ones work best for you
+		  generateGradient: true,
+		  highDpiSupport: true, // High resolution support
+		}
+		
+		var opts3 = {
+		  angle: 0.35, // The span of the gauge arc
+		  lineWidth: 0.17, // The line thickness
+		  radiusScale: 1, // Relative radius
+		  pointer: {
+		    length: 0.6, // // Relative to gauge radius
+		    strokeWidth: 0.035, // The thickness
+		    color: '#000000' // Fill color
+		  },
+		  limitMax: false,     // If false, max value increases automatically if value > maxValue
+		  limitMin: false,     // If true, the min value of the gauge will be fixed
+		  colorStop: '#AA8510',    // just experiment with them
+		  strokeColor: '#DAA520',  // to see which ones work best for you
+		  generateGradient: true,
+		  highDpiSupport: true,     // High resolution support
+		  
+		}
+			
+
+		
+		function quality(position){
+			//<![CDATA[
+			//ajouter switch sur region choisi
+			if(position.localeCompare("aura")== 0){
+
+			var villes = ["63113","03310","69381","42218","38185","15014","01053"];
+			var indices= [];
+			var sum=0;
+			for (var i=0; i<villes.length;i++) {
+				const req = new XMLHttpRequest();
+				req.open('GET', 'http://api.atmo-aura.fr/communes/'+villes[i]+'/indices?date=now&api_token=bf82e489c5532000b1459ff11fc44c2c', false); 
+				req.send(null);
+				
+				if (req.status === 200) {
+				   
+				    obj = JSON.parse(req.response);
+				    
+				    indices.push(obj.indices.valeur);
+				    sum = sum + parseFloat(obj.indices.valeur);
+				} else {
+				    console.log("Status de la réponse: %d (%s)", req.status, req.statusText);
+				}
+				
+			}
+			
+			var indiceAir = 100-sum/indices.length;
+			var indiceWater = Math.random() * (100 - 60) + 60;
+			var indiceSol = Math.random() * (100 - 60) + 60;
+			//appel api AURA
+		
+			}
+			else {
+				var indiceAir = Math.random() * (100 - 60) + 60;
+				var indiceWater = Math.random() * (100 - 60) + 60;
+				var indiceSol = Math.random() * (100 - 60) + 60;
+			}
+			
+			//]]>
+			var target = document.getElementById('foo'); // your canvas element
+			target.innerHTML="";
+			var gauge = new Donut(target).setOptions(opts); // create sexy gauge!
+			gauge.maxValue = 100; // set max gauge value
+			gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+			gauge.animationSpeed = 32; // set animation speed (32 is default value)
+			gauge.set(indiceWater); // set actual value
+			
+			var target2 = document.getElementById('foo2');
+			target2.innerHTML="";// your canvas element
+			var gauge2 = new Donut(target2).setOptions(opts2); // create sexy gauge!
+			gauge2.maxValue = 100; // set max gauge value
+			gauge2.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+			gauge2.animationSpeed = 32; // set animation speed (32 is default value)
+			gauge2.set(indiceAir);
+			
+			var target3 = document.getElementById('foo3'); // your canvas element
+			target3.innerHTML="";
+			var gauge3 = new Donut(target3).setOptions(opts3); // create sexy gauge!
+			gauge3.maxValue = 100; // set max gauge value
+			gauge3.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+			gauge3.animationSpeed = 32; // set animation speed (32 is default value)
+			gauge3.set(indiceSol); // set actual value
+			
+		}
+		var regions = { "aura" : "Auvergne - Rhône-Aples",
+				"hf":"Hauts de France",
+				"na":"Nouvelle-Aquitaine",
+				"occ":"Occitanie",
+				"corse":"Corse",
+				"paca":"PACA",
+				"idf":"Ile de France",
+				"brz":"Bretagne",
+				"nor":"Normandie",
+				"ge":"Grand Est",
+				"bfc":"Bourgogne - Franche Comté",
+				"cvl":"Centre Val de Loire",
+				"pdl":"Pays de la Loire",
+				"domtom":"DOM-TOM"
+		}
+		var regionsCenterCoords = { "aura" : [45.4471431,4.385250700000029],
+				"hf":[50.2871336,2.781224599999973],
+				"na":[45.7087182,0.6268910000000005],
+				"occ":[43.8927232,3.28276249999999],
+				"corse":[42.0396042,9.012892599999986],
+				"paca":[43.9351691,6.067919399999937],
+				"idf":[48.8499198,2.637041100000033],
+				"brz":[48.2020471,2.93264350000004],
+				"nor":[48.87987039999999,0.17125290000001314],
+				"ge":[48.699803,6.187807399999997],
+				"bfc":[47.2805127,4.9994371999999885],
+				"cvl":[47.7515686,1.6750630999999885],
+				"pdl":[47.7632836,0.3299686999999949],
+				"domtom":"DOM-TOM"
+		}
+	
+		$(document).ready(function() {
+			$(".btn-pref .btn").click(function () {
+			    $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
+			    // $(".tab").addClass("active"); // instead of this do the below 
+			    $(this).removeClass("btn-default").addClass("btn-primary");   
+			});
+			$('#regionSel').on('change', function() {
+				  quality(this.value);
+				  
+				 $(".regionDisplay").html(regions[this.value]);
+				 map.setCenter(new google.maps.LatLng(regionsCenterCoords[this.value][0], regionsCenterCoords[this.value][1]));
+				 mapAir.setCenter(new google.maps.LatLng(regionsCenterCoords[this.value][0], regionsCenterCoords[this.value][1]));
+				 mapEarth.setCenter(new google.maps.LatLng(regionsCenterCoords[this.value][0], regionsCenterCoords[this.value][1]));
+				});
+			quality("aura");
+		});
+		</script>
+	
+	</body>
+</html>

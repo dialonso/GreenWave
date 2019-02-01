@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<title>Wiki Récuperation des données | Greenwave</title>
+</head>
+<body>
+	<div class="row">
+		
+					<form class="form" th:action="@{/wiki}" id="nom" method="post" th:object="${wikiForm}">
+						<div>
+							<label>Nom</label>
+				
+					  		<select id="id" name="id">
+					  			<option th:each="w: ${name}" 
+							         	th:text="${{w.getNom()}}"
+							         	th:value= "${{w.getNom()}}">
+							    </option>
+					  		</select>
+							 <input id="connection_submit" name="connection_submit" type="submit" class="btn btn-primary" value="Connexion"/>
+					  		<br></br>
+					  	</div>
+					
+	</form>
+	
+	<ul th:each="w: ${name}">
+		<li>
+		<a  href="#" onclick="getdoc(this)">
+		<form class="form"  id="nom" method="post" th:object="${wikiForm}" style="display:none">
+			<input type="text"  id="name" name="name" th:value= "${{w.getNom()}}"></input>
+			<input type="submit" value="getDoc" class="validation"></input>
+		</form>
+			<span th:text="${{w.getNom()}}"></span>
+		</a>
+		</li>
+	</ul> 
+	</div>
+	
+	<script>
+	function getdoc(element){
+		console.log(element);
+		element.querySelector("form").submit();
+	}
+	</script>
+</body>
+</html>

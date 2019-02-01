@@ -1,0 +1,33 @@
+#h1_404
+{
+	color: #DCDCDC;
+	font-family: 'Open Sans Condensed', sans-serif;
+	font-size: 300px;
+	font-weight: 700;
+	line-height: 64px;
+	margin: 0 0 0;
+	padding: 20px 30px;
+	text-align: center;
+	text-transform: uppercase;
+}
+hr.style11 {
+	height: 6px;
+	background: url(http://ibrahimjabbari.com/english/images/hr-11.png) repeat-x 0 0;
+    border: 0;
+    width: 90%;
+}
+hr.style11:before {
+	content: '';
+	display: block;
+	margin-top: 30px;
+}
+#p_404
+{
+	color: #222222;/*#DCDCDC;*/
+	font-family: 'Open Sans Condensed', sans-serif;
+	font-size: 20px;
+	font-weight: 700;
+	line-height: 64px;
+	margin: 0 0 0;
+	text-align: center;
+}

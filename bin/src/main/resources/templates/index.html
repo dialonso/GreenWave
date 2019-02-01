@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Accueil | GreenWave</title>
+	
+	    <div th:replace="fragments/header_public :: header-public-css"/>
+		
+		<style>
+			.quote {
+			    color: rgba(0,0,0,.1);
+			    text-align: center;
+			    margin-bottom: 30px;
+			}
+		</style>
+		
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_public :: header-public"/>
+	
+			<div class="container-fluid" id="body_content">
+		
+				<div class="row" id="main_banner">
+					<div id="quote_container">
+						<div class="quote">
+							<i class="fa fa-quote-left fa-3x" style="color:#2DADE2;float:left;"></i>
+						</div>
+						<p style="font-size:26px; color:#00b0f0">
+					    	Agissons avant qu'il ne soit trop tard.<br></br>
+							Préservons les espaces naturels qui font la richesse et la beauté de notre planète.
+					   	</p>
+						<div class="quote">
+							<i class="fa fa-quote-right fa-3x" style="color:#2DADE2;float:right;"></i>
+						</div>
+					</div>
+				</div>
+			
+				<div class="row text-center" id="key_number">
+					<div id="number_container">
+						<div class="number col-lg-4 col-sm-4 col-md-4">
+							<img class="logo_number" src="images/logos/earth.svg" alt="Planet Icon"/>
+							<div class="number_text_container">
+								<span class="number_text" th:inline="text">
+									<span class="actual_number count" th:text="${total_countries}"></span> 
+									<br/>
+									[[${labels[0]}]]
+								</span>
+							</div>
+						</div>
+						<div class="number col-lg-4 col-sm-4 col-md-4">
+							<img class="logo_number" src="images/logos/chemistry_icon.svg" alt="Flask Icon"/>
+							<div class="number_text_container">
+								<span class="number_text" th:inline="text">
+									<span class="actual_number count" th:text="${total_researchers}"></span> 
+									<br/>
+									[[${labels[1]}]]
+								</span>
+							</div>
+						</div>
+						<div class="number col-lg-4 col-sm-4 col-md-4">
+							<img class="logo_number" src="images/logos/statistics.svg" alt="Statistics Icon"/>
+							<div class="number_text_container">
+								<span class="number_text" th:inline="text">
+									<span class="actual_number count" th:text="${total_data}"></span> 
+									<br/>
+									[[${labels[2]}]]
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row text-center title_bloc">
+					<h3>Notre objectif</h3>
+					<div class="line"></div>
+				</div>
+			
+				<div class="row text-center" id="metier">
+					<div id="presentation_text_container" class="text-justify">
+						<p id="presentation_text">
+							<strong>GreenWave</strong> est une start-up française dont le but est de préserver la qualité des étendues d’eau, des sols et de l'air que nous respirons.
+							Il n’y a que peu d'initiatives qui soient menées afin de <strong>sensibiliser</strong> les populations aux effets néfastes que peuvent avoir nos actions sur ces ressources qui nous sont, pourtant, indispensables.
+							L’une des missions de <strong>GreenWave</strong> est de garantir un <strong>suivi qualitatif</strong> de l'eau de nos rivières et de nos lacs, de notre air et de nos sols,
+							afin de <strong>préserver</strong> notre écosystème. <br/><br/>
+							Nous mettons pour cela à votre disposition une <strong>application mobile</strong> qui peut vous permettre à vous, chercheurs, scientifiques, d’effectuer
+							<strong>vos propres relevés</strong>,
+							et ainsi de participer à l’effort commun.
+							Grâce à un <strong>suivi en temps réel</strong> de l’évolution des divers critères de qualité pris en charge par notre solution,
+							vous serez alertés en cas d’évolution anormale d’une donnée.
+							Vous pourrez aussi accéder à votre <strong>espace personnel</strong>, depuis lequel vous aurez tout le loisir de consulter
+							les nombreux <strong>graphiques</strong> que nous mettons à votre disposition,
+							ou encore d'utiliser notre fonctionnalité d’<strong>exportation</strong>, pour pouvoir accéder aux relevés <strong>GreenWave</strong> où que vous soyez.<br/>
+							De très nombreux facteurs influent sur la qualité et surtout sur la quantité de ressources de notre planète, notamment le réchauffement climatique. <br/><br/>
+						</p>
+					</div>
+				</div>
+			
+				<div class="row text-center title_bloc">
+					<h3>Nos points clefs</h3>
+					<div class="line"></div>
+				</div>
+			
+				<div class="row text-center ">
+					<div id="stats_container">
+						<div class="col-lg-4 co-lg-offset-2  col-md-4 col-md-offset-2 col-sm-6 col-sm-offset-0 col-xs-12 col-xs-offset-0 col_stats text-center">
+							<div class="stats">
+								<img class="logo_stats" src="images/logos/search.svg" alt="Search Icon"/>
+								<span class="stats_title">
+									Analyse
+								</span>
+							</div>
+							<div class="stats">
+								<img class="logo_stats" src="images/logos/shield.svg" alt="Shield Icon"/>
+								<span class="stats_title">
+									Protection de l'environnement
+								</span>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-4  col-sm-6   col-xs-12 col_stats text-center">
+							<div class="stats">
+								<img class="logo_stats" src="images/logos/chevron_right.svg" alt="Chevron Icon"/>
+								<span class="stats_title">
+									Suivi de données
+								</span>
+							</div>
+							<div class="stats">
+								<img class="logo_stats" src="images/logos/whiteboard.svg" alt="Whiteboard Icon"/>
+								<span class="stats_title">
+									Statistiques
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>	
+			</div>
+	
+			<div th:replace="fragments/footer_public :: footer-public"/>
+			
+			<script>
+				$(document).ready(function(){
+					// smooth scroll
+					$('.smooth_scroll').on('click', function() {
+						var page = $(this).attr('href');
+						var speed = 750;
+						$('html, body').animate( { scrollTop: $(page).offset().top }, speed );
+						return false;
+					});
+	
+					// numbers animation
+					$('.count').each(function () {
+					    $(this).prop('Counter',0).animate({
+					        Counter: $(this).text()
+					    }, {
+					        duration: 4000,
+					        easing: 'swing',
+					        step: function (now) {
+					            $(this).text(Math.ceil(now));
+					        }
+					    });
+					});
+	
+				});
+			</script>
+	</body>
+</html>

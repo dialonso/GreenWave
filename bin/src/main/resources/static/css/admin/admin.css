@@ -1,0 +1,16 @@
+input, button{
+	padding: 8px 27px;
+}
+button{
+	margin-top: 10px;
+}
+.error_message{
+	color: red;
+}
+.alert{
+	width: auto;
+	max-width: 30%;
+}
+#body_container{
+	padding: 0;
+}

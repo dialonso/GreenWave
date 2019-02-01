@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Administration - Exportation des données (Sol) | GreenWave</title>
+	
+	    <div th:replace="fragments/header_admin :: header-admin-css"/>
+		
+		<link rel="stylesheet" th:href="@{/css/admin/admin.css}"
+	              href="../../css/admin/admin.css" />		
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_admin :: header-admin"/>	
+		
+		<div class="container_fluid" id="body_container">
+		    <div class="row">
+				<div class="page-header" id="header_admin">
+					<h1>
+						Tableau de bord 
+						<small>Exportation des données</small>
+					</h1>
+				</div>
+			</div>
+			
+			<div class="row" style="margin-left: 10px;">
+				<form action="#" class="form" th:action="@{/dataExportEarthValidate}" th:object="${exportDataForm}" method="post">
+					<div class="form-group">
+						<label>Récupérer les données enregistrées entre: </label>
+				  		<input id="fDate" type="date" th:field="*{startDate}" value="01/01/2016" />
+				  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" >
+							Champ invalide
+                		</div>
+                		
+				  		<label> et </label>
+				  		<input id="lDate" type="date" th:field="*{endDate}" value="01/01/2017" />
+				  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" >
+							Champ invalide
+                		</div>
+			  		</div>
+			  		
+			  		<div class="form-group">
+				  		<label>Saisissez un ou plusieurs types de mesures à exporter </label>
+				  		<select multiple="multiple" id="ot_measures" th:field="*{other_measures}">
+				  			<option th:each="ot_measure : ${ot_measures}" 
+							        th:value="${ot_measure}" 
+							        th:text="${ot_measure}">
+						    </option>
+				  		</select>
+				  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('other_measures')}" th:errors="*{other_measures}" >
+							Champ invalide
+                		</div>
+			  		</div>
+			  		
+			  		<div class="form-group">
+				  		<label>Saisissez un ou plusieurs types de polluants à exporter </label>
+				  		<select multiple="multiple" id="ot_measures" th:field="*{polluting_measures}">
+				  			<option th:each="po_measure : ${po_measures}" 
+							        th:value="${po_measure}" 
+							        th:text="${po_measure}">
+						    </option>
+				  		</select>
+				  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('polluting_measures')}" th:errors="*{polluting_measures}" >
+							Champ invalide
+                		</div>
+			  		</div>			  		
+			  		
+			  		<div class="form-group">
+			  			<label>Saisissez un ou plusieurs départements d'où proviennent les données </label>
+				  		<select multiple="multiple" id="departments" th:field="*{departments}">
+				  			<option th:each="dep : ${departments_names}" 
+							        th:value="${dep}" 
+							        th:text="${dep}">
+						    </option>
+				  		</select>
+				  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('departments')}" th:errors="*{departments}" >
+							Champ invalide
+                		</div>
+			  		</div>
+			  		
+			  		<div class="form-group">
+			  			<label>Saisissez le format de fichier</label>
+				  		<select id="file_type" th:field="*{file_type}">
+				  			<option value="Excel">
+				  				Excel
+						    </option>
+						    <option value="CSV">
+						    	CSV
+						    </option>
+				  		</select>
+				  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('departments')}" th:errors="*{departments}" >
+							Champ invalide
+                		</div>
+			  		</div>
+					
+					<input type="submit" class="btn btn-primary" value="Exporter les données"/>
+				</form>
+			</div>
+			
+			<div class="alert alert-info" th:text="${info}" th:if="${info} != null"></div>
+			<div class="alert alert-success" th:if="${success} != null" th:text="${success}" ></div>
+	  		<div class="alert alert-danger" th:if="${error_exists} != null" th:text="${error_exists}" ></div>
+			
+		</div>
+		
+		
+		<div th:replace="fragments/footer_admin :: footer-admin"/>
+		
+		<script>
+			//<![CDATA[
+			$(document).ready(function(){
+				responsive();
+
+			    var lDate = new Date();		   
+			    var fDate = new Date(lDate);
+			    fDate.setDate(fDate.getDate() - 365);
+			   
+			    document.getElementById('fDate').valueAsDate = fDate;
+			    document.getElementById('lDate').valueAsDate = lDate;
+				
+				$('#body_container').css('margin-left', $('#sidebar').width() + 10);
+				$('#admin_menu_link').click(function(){
+					if( $('#submenu_admin').is(':visible') )
+						$('#admin_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#admin_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_admin').slideToggle();
+				});
+				
+				$('#user_menu_link').click(function(){
+					if( $('#submenu_user').is(':visible') )
+						$('#user_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#user_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_user').slideToggle();
+				});
+				
+				$('#statistics_menu_link').click(function(){
+					if( $('#submenu_statistics').is(':visible') )
+						$('#charts_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#charts_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_statistics').slideToggle();
+				});
+				
+				$(window).resize(function(){
+					responsive();
+				});
+				
+				function responsive(){
+					if($(window).width() <= 700){
+						$('.navbar-brand').html('<i class=\"fa fa-fw fa-bars\"></i>');
+					}
+					else if ($(window).width() > 700){
+						$('.navbar-brand').html('Administration');
+					}
+				}
+				
+			});
+			//]]>
+		</script>
+		
+	</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Connexion | GreenWave</title>
+	
+	    <div th:replace="fragments/header_public :: header-public-css"/>
+		
+		<link rel="stylesheet" th:href="@{/css/login.css}"
+	              href="../../css/login.css" />		
+	</head>
+	
+	<body class="text-center container">
+
+		<div id="form_container" class="text-center">
+		
+			<a th:href="@{/}" title="Accueil GreenWave">
+				<img id="logo_connexion" src="images/logos/logo_greenwave.svg" alt="GreenWave Logo" width="400px" />
+			</a>
+			<form class="form" th:action="@{/login}" id="connection_form" method="post" th:object="${loginForm}">
+				<div class="form-group">
+					<input type="text" placeholder="Identifiant" name="username" id="login" required="required" />
+				</div>
+				<div class="form-group">
+					<input id="password" type="password" name="password" placeholder="Password" required="required"/>
+				</div>					
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" id="remember_me" name="remember_me"/> Se rappeler de moi
+					</label>
+				</div>
+				<div class="form-group">
+					<input id="connection_submit" name="connection_submit" type="submit" class="btn btn-primary" value="Connexion"/>
+				</div>
+			</form>
+			<a href="#" id="forgotten_password">Mot de passe oublié ?</a>
+                
+            <br />
+                
+            <div class="alert alert-danger" role="alert" th:if="${error_exists != null}" th:text="${error_exists}"></div>
+                
+		</div>
+				
+	</body>
+</html>

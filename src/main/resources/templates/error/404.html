@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+	
+	<head>
+		<meta charset="utf-8"/>
+		<title>Page 404 | GreenWave</title>
+	    
+	    <link rel="stylesheet" type="text/css"
+	          href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+			
+		<link rel="stylesheet" type="text/css"
+	          href="webjars/fontawesome/4.6.3/css/font-awesome.min.css" />
+	    
+	    <link rel="stylesheet" th:href="@{/css/404.css}"
+	          href="../../css/404.css" />
+	</head>
+	
+	<body>
+	
+		<div th:replace="fragments/header :: header"/>
+		
+		<hr class="style11" />
+		
+		<div>
+			<h1 id="h1_404">
+				4
+				<i class="fa fa-frown-o" aria-hidden="true"></i>
+				4
+			</h1>
+		</div>
+		
+		<hr class="style11" />
+		
+		<div>
+			<p id="p_404">
+				Nous sommes désolés, il semble que la page que vous demandez est introuvable !
+				<br/>
+				<a href="#" id="back"  title="Retourner à la page précédente GreenWave">Page précédente</a>
+				|
+				<a href="/" title="Retourner à l'accueil GreenWave">Retour à l'accueil</a>
+			</p>
+		</div>
+		
+		<script type="text/javascript"
+				src="webjars/jquery/3.1.1/jquery.min.js"></script>
+						
+		<script type="text/javascript"
+				src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		
+		<script>
+			$(document).ready(function(){
+				$('#back').click(function(){
+					window.history.back();
+				});
+			});
+		</script>
+		
+	</body>
+</html>

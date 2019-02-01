@@ -1,0 +1,66 @@
+body, html{
+	padding: 0;
+	margin: 0;
+}
+.navbar-header{
+	width: 100%;
+}
+#sidebar{
+	position: absolute;
+    top: 50px;
+    left: 225px;
+    width: 225px;
+    margin-left: -225px;
+    border: none;
+    border-radius: 0;
+    overflow-y: auto;
+    background-color: #222;
+    bottom: 0;
+    overflow: hidden;
+    height: 1100px;
+}
+.side_nav_item{
+	display: block;
+}
+.nav>li>a:focus, .nav>li>a:hover, .active{
+	background-color: #080808;
+}
+.nav>li.active>a{
+	color: white;
+}
+.side_nav_item_text, .side_nav_item_text:visited{
+	color: #9d9d9d;
+	text-decoration: none;
+	height: 50px;
+	line-height: 28px;
+}
+.side_nav_item_text:hover{
+	color: white;
+}
+#header_admin{
+	padding-left: 10px;
+	padding-bottom: 0;
+	margin: 0;
+}
+.submenu{
+	list-style-type: none;
+	margin: 0;
+	display: none;
+}
+.submenu_item_text, .submenu_item_text:visited{
+	color: white;
+	text-decoration: none;
+}
+.submenu_item_text:hover{
+	text-decoration: none;
+	color: white;
+}
+.submenu_item:hover{
+	background-color: #080808;
+}
+.toggle_caret{
+	transition: all .2s;
+}
+#admin_menu_link:hover, #user_menu_link:hover, #statistics_menu_link:hover{
+	cursor: pointer;
+}

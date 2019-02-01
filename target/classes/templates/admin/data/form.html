@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Administration - Création de données | GreenWave</title>
+	
+	    <div th:replace="fragments/header_admin :: header-admin-css"/>
+	
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_admin :: header-admin"/>	
+		
+		<div class="container_fluid" id="body_container">
+			<div class="row">
+				<div class="page-header" id="header_admin">
+					<h1>
+						Tableau de bord 
+						<small>Ajout d'une mesure</small>
+					</h1>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12 col-xs-offset-0 text-center">
+					<form class="form" th:action="@{/dataFormDatabase}" id="adddataform" method="post" th:object="${addDataForm}">
+						<div class="form-group">
+							<label>Domaine</label>
+							<br></br>
+					  		<select id="domainSelector" th:field="*{domain}" onchange="myFunction(this.value)">
+					  			<option th:each="type : ${domains}" 
+							          	th:value="${type}" 
+							         	th:text="${{type}}">
+							    </option>
+					  		</select>
+					  		<br></br>
+					  	</div>
+					  		
+					  	<div class="form-group">
+							<label>Mesure</label>
+							<br></br>
+					  		<select id="measureSelector" th:field="*{measure}">
+					  			<option th:each="m : ${measuresWater}" 
+							          	th:value="${m}" 
+							         	th:text="${{m}}">
+							    </option>
+					  		</select>
+					  		<br></br>
+					  	</div>
+	
+						<div class="form-group">
+							<label>Category</label>
+							<br></br>
+					  		<select id="categorySelector" th:field="*{category}">
+					  			<option th:each="c : ${catWater}" 
+							          	th:value="${c.getId_category()}" 
+							         	th:text="${c.getName()}">
+							    </option>
+					  		</select>
+					  		<br></br>
+					  	</div>
+	
+					  	<div class="form-group">
+							<label>Valeur</label>
+							<br></br>
+							<input type="number" th:field="*{value}"></input>
+							<br></br>
+					  	</div>
+					  		
+					  	<div class="form-group">
+							<label>Adresse de mesure</label>
+							<br></br>
+							<input type="text" th:field="*{adresse}"></input>
+							<br></br>
+					  	</div>
+					
+						<input id="connection_submit" name="connection_submit" type="submit" class="btn btn-primary" value="Ajouter"/>
+					</form>
+				</div>
+			</div>
+			
+			<div class="row" >
+				<div class="col-md-4 col-md-offset-4 text-center" th:if="${messageOD}">
+					<div class="alert alert-success" role="alert"  th:text="${messageOD}"></div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div th:replace="fragments/footer_admin :: footer-admin"/>
+		
+		<script type="text/javascript"
+						src="webjars/chartjs/2.7.0/Chart.min.js"/>
+		
+		<script th:inline="javascript">
+			//<![CDATA[
+				
+			function myFunction(val){
+					var watermes = [[${measuresWater}]];
+					var airmes = [[${measuresEarth}]];
+					var earthmes = [[${mesuresAir}]];
+					
+					var watercat= [[${catWater}]];
+					var aircat = [[${catEarth}]];
+					var earthcat = [[${catAir}]];
+					
+					var selection = val;
+					var x=document.getElementById("measureSelector").innerHTML="";
+					var x=document.getElementById("categorySelector").innerHTML="";
+					
+					if(selection.localeCompare("WATER")==0){
+						for(var p=0;p<watermes.length;p++){
+							document.getElementById("measureSelector").append(new Option(watermes[p],watermes[p]));
+						}
+						for(var p=0;p<watercat.length;p++){
+							console.log(watercat[p].name);
+							document.getElementById("categorySelector").append(new Option(watercat[p].name,watercat[p].id_category));
+						}
+						
+					}
+					else if(selection.localeCompare("AIR")==0){
+						
+						for(var p=0;p<airmes.length;p++){
+							document.getElementById("measureSelector").append(new Option(airmes[p],airmes[p]));
+						}
+						for(var p=0;p<aircat.length;p++){
+							document.getElementById("categorySelector").append(new Option(aircat[p].name,aircat[p].id_category));
+						}
+					}
+					else {
+						for(var p=0;p<earthmes.length;p++){
+							document.getElementById("measureSelector").append(new Option(earthmes[p],earthmes[p]));
+						}
+						for(var p=0;p<earthcat.length;p++){
+							document.getElementById("categorySelector").append(new Option(earthcat[p].name,earthcat[p].id_category));
+						}
+					}
+				}
+				
+				
+				
+			$(document).ready(function(){
+				$('#body_container').css('margin-left', $('#sidebar').width() + 10);
+				$('#admin_menu_link').click(function(){
+					if( $('#submenu_admin').is(':visible') )
+						$('#admin_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#admin_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_admin').slideToggle();
+				});	
+				
+				$('#user_menu_link').click(function(){
+					if( $('#submenu_user').is(':visible') )
+						$('#user_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#user_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_user').slideToggle();
+				});
+				
+				$('#statistics_menu_link').click(function(){
+					if( $('#submenu_statistics').is(':visible') )
+						$('#charts_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#charts_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_statistics').slideToggle();
+				});
+				
+				$(window).resize(function(){
+					responsive();
+				});
+				
+				function responsive(){
+					if($(window).width() <= 700){
+						$('.navbar-brand').html('<i class=\"fa fa-fw fa-bars\"></i>');
+					}
+					else if ($(window).width() > 700){
+						$('.navbar-brand').html('Administration');
+					}
+					else if($(window).width() <= 500){
+						$('.logo_number').hide();
+						if($('.text-number').hasClass('text-right'))
+							$('.text-number').removeClass('text-right');
+					}
+					else if ($(window).width() > 500)
+					{
+						$('.logo_number').show();
+						if(!$('.text-number').hasClass('text-right'))
+							$('.text-number').addClass('text-right');
+					}
+				}
+				
+			});
+			//]]>
+		</script>
+		
+	</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Contact | GreenWave</title>
+	
+	    <div th:replace="fragments/header_public :: header-public-css"/>
+	
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_public :: header-public"/>
+	
+		<div class="container-fluid" id="body_content">
+			<div class="row" id="main_banner">
+				<div id="quote_container">
+					<div class="quote">
+				   		<i class="fa fa-quote-left fa-4x" style="color:#2DADE2;float:left;"></i>
+				   	</div>
+				   	<p style="font-size:26px; color:#00b0f0">
+				    	Agissons avant qu'il ne soit trop tard.<br></br>
+						Préservons les espaces naturels qui font la richesse et la beauté de notre planète.
+				   	</p>
+				   	<div class="quote">
+				   		<i class="fa fa-quote-right fa-4x" style="color:#2DADE2;float:right;"></i>
+				   	</div>
+			    </div>
+			</div>
+			
+			<div class="row text-center title_bloc">
+				<h3>Contactez-nous</h3>
+				<div class="line"></div>
+			</div>
+		
+			<div class="row text-center" id="contact">
+				<div id="form_container" class="text-center">
+					<form method="post" id="contact_form" action="#" th:action="@{/contactUs}" th:object="${contactForm}">
+						<div class="form-group">
+							<label for="contact_email">Adresse mail</label>
+							<input type="email" class="form-control" id="contact_email" placeholder="Email" th:field="*{email}" required="required" />
+							<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" th:errors="*{email}" >
+								Champ invalide
+                			</div>
+						</div>
+						<div class="form-group">
+							<label for="contact_object">Objet</label>
+							<input type="text" class="form-control" id="contact_object" placeholder="Objet" th:field="*{object}" required="required"/>
+							<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('object')}" th:errors="*{object}" >
+								Champ invalide
+                			</div>
+						</div>
+						<div class="form-group">
+							<label for="contact_text">Contenu</label>
+							<textarea class="form-control" id="contact_text" rows="5" required="required" th:field="*{content}">
+
+							</textarea>
+							<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('content')}" th:errors="*{content}" >
+								Champ invalide
+                			</div>
+						</div>
+						<button type="submit" class="valid_button btn-block">Envoyer</button>
+					</form>
+
+					<div class="alert alert-success" role="alert"  th:if="${success != null}" th:text="${success}"></div>
+
+	                <div class="alert alert-danger" role="alert"  th:if="${error_exists != null}" th:text="${error_exists}"></div>
+				</div>
+			</div>
+			
+		</div>
+		
+		<div th:replace="fragments/footer_public :: footer-public"/>
+			
+	</body>
+</html>

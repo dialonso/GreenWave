@@ -1,0 +1,56 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		
+	    <div th:fragment="header-public-css">
+	        <link rel="stylesheet" type="text/css"
+	              href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+	              
+	        <link rel="stylesheet" type="text/css"
+	              href="webjars/fontawesome/4.6.3/css/font-awesome.min.css" />
+	
+	        <link rel="stylesheet" th:href="@{/css/main.css}"
+	              href="../../css/main.css" />
+	    </div>
+	</head>
+	
+	<body>
+	
+		<div th:fragment="header-public">
+    		<header>
+				  <div class="container-fluid" id="top">
+					  <div class="row row-eq-height">
+						    <div class="col-md-3 col-md-offset-0 col-sm-6 col-sm-offset-3 col-xs-12 col-logo">
+						        <a class="navbar-brand" th:href="@{/}">
+						        	<img id="logo" alt="GreenWave" src="images/logos/logo_greenwave.svg"/>
+						     	 </a>
+						    </div>
+						    <div class="col-md-9 col-sm-12 col-xs-12 menuBloc ">
+								<div class="col-md-2 col-sm-2 col-xs-12 menuItem activeMenu text-center">
+									<a th:href="@{/}" class="navbar-item-text smooth_scroll">Greenwave</a>
+								</div>
+								<div class="col-md-2 col-sm-2 col-xs-12  menuItem text-center ">
+									<a th:href="@{/publicArea}" class="navbar-item-text smooth_scroll">Espace public</a>
+								</div>
+								<div class="col-md-2 col-sm-2 col-xs-12  menuItem text-center">
+									<a href="http://greenwave.alwaysdata.net/wordpress" class="navbar-item-text smooth_scroll">Actualités</a>
+								</div>
+								<div class="col-md-2 col-sm-2 col-xs-12  menuItem text-center">
+									<a th:href="@{/wiki}" class="navbar-item-text smooth_scroll">Documentation</a>
+								</div>
+								<div class="col-md-2 col-sm-2 col-xs-12  menuItem text-center ">
+									<a th:href="@{/login}" class="navbar-item-text smooth_scroll">Connexion</a>
+								</div>
+							 	<div class="col-md-2 col-sm-2 col-xs-12 menuItem text-center">
+							 		<a th:href="@{/contact}" class="navbar-item-text smooth_scroll">Contact</a>
+							 	</div>
+						    </div>
+					    </div>
+				  </div>
+				 
+				<div class="col-md-12" id="blue-zone"></div>
+			</header>
+		</div>
+
+	</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Administration - Gestion des administrateurs | GreenWave</title>
+	
+	    <div th:replace="fragments/header_admin :: header-admin-css"/>
+		
+		<link rel="stylesheet" th:href="@{/css/admin/admin.css}"
+	              href="../../css/admin/admin.css" />
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_admin :: header-admin"/>	
+		
+		<div class="container_fluid" id="body_container">
+			<div class="row">
+				<div class="page-header" id="header_admin">
+					<h1>
+						Espace administrateur 
+						<small>Création de compte administrateur</small>
+					</h1>
+				</div>
+			</div>
+			
+            <div class="row">
+                <div class="col-md-10 col-sm-10 col-xs-10">
+                    <form action="#" th:action="@{/createAdminValidate}" th:object="${userForm}" method="post">
+                    	<fieldset class="col-lg-5 col-md-10 col-sm-10 form-group">
+							<legend>Informations générales</legend>
+							<div class="form-group">
+								<input type="text" placeholder="Nom" name="admin_lname" id="admin_lname" required="required"  th:field="*{lastName}"/>
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" >
+									Champ invalide
+		                		</div>
+							</div>
+	                     	<div class="form-group">
+								<input type="text" placeholder="Prénom" name="admin_fname" id="admin_fname" required="required"  th:field="*{forName}"/>
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('forName')}" th:errors="*{forName}" >
+									Champ invalide
+		                		</div>
+							</div>
+							
+							<div class="select_field form-group" th:with="occupList= ${ {'Scientifique','Chercheur'} }">
+								<select class="form-control" th:field="*{occup}" >
+									<option th:each="occup : ${occupList}" th:value="${occup}" th:text="${occup}">Occupation</option>
+								</select>
+							</div>
+							
+							<div class="form-group">
+								<input type="text" placeholder="Adresse" name="admin_addr" id="admin_addr" required="required" th:field="*{adress}"/>
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}" >
+									Champ invalide
+		                		</div>
+							</div>
+							
+							<div class="select_field form-group" >
+								<select th:field="*{orga}" class="form-control" >
+									<option th:each="orga : ${ {'Gouvernement','Mairie'} }" 
+									th:value="${orga}" 
+									th:text="${orga}">Organisation</option>
+								</select>
+							</div>						
+						</fieldset>
+						
+						<fieldset class="col-lg-5 col-md-10 col-sm-10 form-group">
+							<legend>Informations de connexion</legend>
+							<div class="form-group">
+								<input type="text" placeholder="Identifiant" name="login" id="login" required="required" th:field="*{username}"/>
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('username')}" th:errors="*{username}" >
+									Nom d'utilisateur invalide
+		                		</div>
+							</div>
+							<div class="form-group">
+								<input id="password" type="password" name="password" placeholder="Mot de passe" required="required" th:field="*{password}"/>
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" >
+									Mot de passe invalide
+		                		</div>
+							</div>
+							<div class="form-group">
+								<input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirmer le mot de passe" required="required" th:field="*{confirmPassword}"/>
+								<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" >
+									Mot de passe invalide
+		                		</div>
+							</div>	
+							<button class="btn btn-primary" type="submit">Créer l'administrateur</button>
+						</fieldset>						
+                    </form>
+                </div>
+            </div>
+            
+            <div class="row" style="margin-left: 10px;">
+                 <div class="alert alert-success" role="alert"  th:if="${success != null}" th:text="${success}" ></div>	
+                 <div class="alert alert-danger" role="alert"  th:if="${error_exists != null}" th:text="${error_exists}" ></div>     
+			</div>
+			
+        </div>
+		
+		<div th:replace="fragments/footer_admin :: footer-admin"/>
+		
+		<script>
+			//<![CDATA[
+			$(document).ready(function(){
+				responsive();
+				
+				$('#body_container').css('margin-left', $('#sidebar').width() + 10);
+				$('.select_field').width($('input').outerWidth());
+				
+				$('#admin_menu_link').click(function(){
+					if( $('#submenu_admin').is(':visible') )
+						$('#admin_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#admin_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_admin').slideToggle();
+				});
+				
+				$('#user_menu_link').click(function(){
+					if( $('#submenu_user').is(':visible') )
+						$('#user_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#user_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_user').slideToggle();
+				});
+				
+				$('#statistics_menu_link').click(function(){
+					if( $('#submenu_statistics').is(':visible') )
+						$('#charts_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#charts_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_statistics').slideToggle();
+				});
+				
+				$(window).resize(function(){
+					responsive();
+				});
+				
+				function responsive(){
+					$('#sidebar').height("100%");
+					if($(window).width() <= 700){
+						$('.navbar-brand').html('<i class=\"fa fa-fw fa-bars\"></i>');
+					}
+					else if ($(window).width() > 700){
+						$('.navbar-brand').html('Administration');
+					}
+				}
+			});
+			//]]>
+		</script>
+		
+	</body>
+</html>

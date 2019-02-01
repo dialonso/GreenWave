@@ -1,0 +1,342 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+	    <title>Administration - Carte interactive (Air) | GreenWave</title>
+	
+	    <div th:replace="fragments/header_admin :: header-admin-css"/>
+		
+		<link rel="stylesheet" th:href="@{/css/admin/admin.css}"
+	              href="../../css/admin/admin.css" />
+	              
+	              <link rel="stylesheet" th:href="@{/css/admin/chartForm.css}"
+	              href="../../css/admin/chartForm.css" />
+	</head>
+	
+	<body>
+
+		<div th:replace="fragments/header_admin :: header-admin"/>	
+		
+		<div class="container_fluid" id="body_container">
+		    <div class="row">
+				<div class="page-header" id="header_admin">
+					<h1>
+						Tableau de bord 
+						<small>Carte interactive</small>
+					</h1>
+				</div>
+			</div>
+			
+	<div class="row" style="margin-left: 10px;">
+				
+				<form action="#" th:action="@{/mapChangeAir}" th:object="${dateForm}" method="post">
+					<div class="row" >
+                		<div class="col-md-offset-1 col-md-10 col-xs-offset-1 col-xs-10">
+                    		<div class="panel" style="margin-top:10px;">
+                        		<div class="panel-heading custom-header-panel">
+                            		<h3 class="panel-title">Génération de la carte</h3>
+                       			</div>
+		                        <div class="panel-body" id="formBody">
+									<div class="form-group">
+								  		<label class="col-sm-6 col-xs-12 control-label">Données enregistrées entre<span class="requeried"> *</span></label>
+								  		<div class="col-sm-6 col-xs-12">
+									  		<input required="required" id="fDate" type="date" th:field="*{startDate}" value="01/01/2016" />
+									  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" >
+												Champ invalide
+					                		</div>
+									  		<input required="required" id="lDate" type="date" th:field="*{endDate}" value="01/01/2017" />
+									  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" >
+												Champ invalide
+					                		</div>
+				                		</div>
+			                		</div>
+			                		<br /><br /><br /><br />
+			                		<div class="form-group">
+								  		<label class="col-sm-6 col-xs-12 control-label">Types de données à exporter</label>
+								  		<div class="col-sm-6 col-xs-12">
+									  		<select multiple="multiple" class="col-sm-12 col-xs-12" id="ot_measures" th:field="*{ot_measures}">
+									  			<option th:each="ot_measure : ${ot_measures}" 
+												          th:value="${ot_measure}" 
+												         th:text="${ot_measure}">
+											    </option>
+									  		</select>
+									  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('ot_measures')}" th:errors="*{ot_measures}" >
+												Champ invalide
+					                		</div>
+					                	</div>
+							  		</div>
+							  		
+							  		<br /><br /><br /><br />
+							  		<div class="form-group">
+								  		<label class="col-sm-6 col-xs-12 control-label">Type de carte à générer</label>
+								  		<div class="col-sm-6 col-xs-12">
+									  		<select  class="col-sm-12 col-xs-12" id="method" th:field="*{method}">
+									  			<option value="last">
+									  				Dernière valeur enregistrée par endroit
+											    </option>
+											    <option value="all">
+									  				Toutes les données enregistrées par endroit
+											    </option>
+									  		</select>
+									  		<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('method')}" th:errors="*{method}" >
+												Champ invalide
+					                		</div>
+				                		</div>
+							  		</div>			  		
+									
+									<div class="form-group col-sm-12 col-xs-12 text-center">
+										<button type="submit" class="btn btn-orange-md roboto">Actualiser la carte</button>
+									</div>
+									
+				
+									
+									
+			
+									<div class="col-sm-12 alert alert-info" th:text="${info}" th:if="${info} != null">
+									</div>
+							  		<div class="col-sm-12 alert alert-danger" th:if="${error_exists} != null" th:text="${error_exists}" >
+						         	</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+
+				</form>
+			</div>
+			
+			<div class="row">
+				<div id="interactive_map">
+				</div>
+			</div>
+		</div>
+		
+		<div th:replace="fragments/footer_admin :: footer-admin"/>
+		
+		<!-- Generate map -->
+	   	<script type="text/javascript" th:inline="javascript">
+	   	/*<![CDATA[*/
+		   var lDate = new Date();		   
+		   var fDate = new Date(lDate);
+		   fDate.setDate(fDate.getDate() - 365);
+		   
+		   document.getElementById('fDate').valueAsDate = fDate;
+		   document.getElementById('lDate').valueAsDate = lDate;
+		   
+		   var map;	   
+
+		   // data is an array of Data, containing: "id_data", "latitude", "longitude", "value", "category", "date" and "type"
+		   var data = JSON.parse([[${datas}]]);
+		   var loc = [[${locs}]];
+		   var method = [[${method}]];
+		   
+		   // center of the map if there's no marker
+		   var lat = 45.7833;
+		   var lng = 3.0833;
+		   
+		   // tab of different units and corresponding measures (tab_units and tab_measures are of same size, each type corresponds to one unit)
+		 
+		   function initMap() {
+			     map = new google.maps.Map(document.getElementById('interactive_map'), {
+			       center: {lat: lat, lng: lng},
+			       zoom: 5
+			     });
+			     var gofirst = false;
+			     var gosecond = false;
+			     var gothird = false;
+			     if (method === null)
+			    	 gofirst = true;
+			     else if(method === 'last')
+			    	 gofirst = true;
+			     else if(method === "all")
+			    	 gosecond = true;
+			     
+			     if (gofirst === true)
+			     {
+				     if(data.length > 0)
+			    	 {
+					     // initialize LatLngBounds to automatically set the center of the map according to the markers
+					     var markerBounds = new google.maps.LatLngBounds();				
+					     
+					     // add markers
+					     for (var i = 0; i < data.length; i++)
+		    			 {
+					    	 // marker coordinates
+				    		 var markerCoords = new google.maps.LatLng(parseFloat(data[i].latitude), parseFloat(data[i].longitude));
+			    			
+			    			 // call the extend function each time to calculate the center and zoom of the map
+				    		 markerBounds.extend(markerCoords);
+			    			
+				    	     // create the marker
+				    		 var marker = new google.maps.Marker({position:markerCoords, title:"Test"});
+					    	 marker.setMap(map);				    	
+		
+					    	 // create the infowindow
+					    	 var infowindow = new google.maps.InfoWindow();
+							 
+							 var contentString = '<div class="info_window_content">'+
+						   		'<div class="site_infos">'+
+						     	'</div>'+
+						     	'<h1 class="first_heading">Informations</h1>'+
+						     	'<div class="info_body_content">'+
+						     	'<p><b>Adresse complète: </b>' + data[i].complete_address+ '<br/>'+
+						     	'<b>Latitude: </b>' + data[i].latitude + '<br/>'+
+						     	'<b>Longitude: </b>' +  + data[i].longitude + '<br/>'+
+						     	'<b>Dernière donnée enregistrée: </b><br/>'+
+						     	'<table class="table table-bordered"><tr><th>Type</th><th>Valeur</th><th>Date</th></tr>'+
+						     	'<tr><td>' + data[i].type + '</td><td>' + data[i].value + '</td><td>' + data[i].date + '</td></tr></table>'+
+						     	'</div>'+
+						     	'</div>';
+						     	
+						     infowindow.setContent(contentString);				     
+					    	
+					    	 // add the event listener to the markers to display the infowindow on click
+					    	 google.maps.event.addListener(marker,'click', (function(marker,infowindow){ 
+					    	     return function() {
+					    	    	 infowindow.open(map,marker);
+					    	     };
+					    	 })(marker,infowindow));
+					    	 
+		    			 }
+			    	 }
+			     }
+			     else if(gosecond === true)
+		    	 {
+			    	 if(data.length > 0 && loc.length > 0)
+			    	 {
+					     // initialize LatLngBounds to automatically set the center of the map according to the markers
+					     var markerBounds = new google.maps.LatLngBounds();				
+
+				    	 // red marker : #FE7569, green marker: #34BA46, yellow marker: #FFFF57, blue marker: #5CA9ED
+				    	 var colors = ["FE7569",  "34BA46", "FFFF57", "5CA9ED"];
+		    	    	 var pinColor = colors[3];
+		    	    	 
+					     // add markers
+					     for (var i = 0; i < loc.length; i++)
+		    			 {
+			    	    	 var countOK = 0;
+			    	    	 var countWarn = 0;
+			    	    	 var countDangerous = 0;
+			    	    	 
+					    	 // marker coordinates
+					    	 // loc[i][0] = lat, loc[i][1] = lng
+				    		 var markerCoords = new google.maps.LatLng(parseFloat(loc[i][0]), parseFloat(loc[i][1]));
+			    			
+							 var contentString = '<div class="info_window_content">'+
+						   		'<div class="site_infos">'+
+						     	'</div>'+
+						     	'<h1 class="first_heading">Informations</h1>'+
+						     	'<div class="info_body_content">'+
+						     	'<p><b>Latitude: </b>' + loc[i][0] + '<br/>'+
+						     	'<b>Longitude: </b>' +  + loc[i][1] + '<br/>'+
+						     	'<b>Liste des données enregistrées: </b><br/>'+
+						     	'<table class="table table-bordered"><tr><th>Type</th><th>Valeur</th><th>Date</th></tr>';
+							     	
+							     for (var j = 0; j < data.length; j++)
+				    			 {
+					    	    	 var fontOK = 0;
+					    	    	 var fontWarn = 0;
+					    	    	 var fontDangerous = 0;
+					    	    	 
+							    	 if (data[j].latitude == loc[i][0] && data[j].longitude == loc[i][1])
+							    	 {
+								    	 // get the unit easily according to the type of data
+							    		 	contentString += '<tr><td>' + data[j].type + '</td><td>' + data[j].value + ' </td><td>' + data[j].date + '</td></tr>';
+									 }
+				    			 }
+							     contentString += '</table></div></div>';
+						    	 
+				    			 // call the extend function each time to calculate the center and zoom of the map
+					    		 markerBounds.extend(markerCoords);
+				    			
+					    	     // create the marker
+					    	     var marker;
+					    	    
+					    	    marker = new google.maps.Marker({position:markerCoords, title:"Données"});
+					    	     
+						    	 marker.setMap(map);				    	
+			
+						    	 // create the infowindow
+						    	 var infowindow = new google.maps.InfoWindow();							
+							     	
+							     infowindow.setContent(contentString);				     
+						    	
+						    	 // add the event listener to the markers to display the infowindow on click
+						    	 google.maps.event.addListener(marker,'click', (function(marker,infowindow){ 
+						    	     return function() {
+						    	    	 infowindow.open(map,marker);
+						    	     };
+						    	 })(marker,infowindow));
+					    	 
+		    			 	}
+			    	 	}
+			    	 }			    
+			    // center the map according to the markers
+	    		map.fitBounds(markerBounds);		     
+
+		    	// resize Function
+		 		google.maps.event.addDomListener(window, "resize", function() {
+		 			var center = map.getCenter();
+		 			google.maps.event.trigger(map, "resize");
+		 			map.setCenter(center);
+		 		});
+		   }
+		  /*]]>*/
+	   	</script>	   
+	   	
+	   	<!-- Link GMap API -->
+	   	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuUwOpO9VelrUfM3rKfaA5HfY83Z8Z2ZI&amp;callback=initMap">
+	   	</script>
+		
+		<script>
+			//<![CDATA[
+			$(document).ready(function(){
+				responsive();
+				
+				$('#body_container').css('margin-left', $('#sidebar').width() + 10);
+				$('#admin_menu_link').click(function(){
+					if( $('#submenu_admin').is(':visible') )
+						$('#admin_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#admin_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_admin').slideToggle();
+				});
+				
+				$('#user_menu_link').click(function(){
+					if( $('#submenu_user').is(':visible') )
+						$('#user_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#user_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_user').slideToggle();
+				});
+				
+				$('#statistics_menu_link').click(function(){
+					if( $('#submenu_statistics').is(':visible') )
+						$('#charts_caret').css("transform", "Rotate(0deg)");
+					else
+						$('#charts_caret').css("transform", "Rotate(90deg)");
+
+					$('#submenu_statistics').slideToggle();
+				});
+				
+				$(window).resize(function(){
+					responsive();
+				});
+				
+				function responsive(){
+					if($(window).width() <= 700){
+						$('.navbar-brand').html('<i class=\"fa fa-fw fa-bars\"></i>');
+					}
+					else if ($(window).width() > 700){
+						$('.navbar-brand').html('Administration');
+					}
+				}
+				
+			});
+			//]]>
+		</script>
+		
+	</body>
+</html>
